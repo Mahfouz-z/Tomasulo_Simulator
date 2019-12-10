@@ -1,18 +1,18 @@
 class RS:
-    def __init__(self, station_config):
-        self.station_config = station_config
+    def __init__(self, station_num):
+        self.station_num = station_num #take it from a file
         self.index = {}
         self.index["lw"] = 0
-        self.index["sw"] = self.index["lw"] + self.station_config["lw_num"]
-        self.index["jmp"] = self.index["sw"] + self.station_config["sw_num"]
-        self.index["jalr"] = self.index["sw"] + self.station_config["sw_num"]
-        self.index["ret"] = self.index["sw"] + self.station_config["sw_num"]
-        self.index["beq"] = self.index["jmp"] + self.station_config["jmp_num"]
-        self.index["add"] = self.index["beq"] + self.station_config["beq_num"]
-        self.index["sub"] = self.index["beq"] + self.station_config["beq_num"]
-        self.index["addi"] = self.index["beq"] + self.station_config["beq_num"]
-        self.index["nand"] = self.index["add"] + self.station_config["add_num"]
-        self.index["mult"] = self.index["nand"] + self.station_config["nand_num"]
+        self.index["sw"] = self.index["lw"] + self.station_num["lw"]
+        self.index["jmp"] = self.index["sw"] + self.station_num["sw"]
+        self.index["jalr"] = self.index["sw"] + self.station_num["sw"]
+        self.index["ret"] = self.index["sw"] + self.station_num["sw"]
+        self.index["beq"] = self.index["jmp"] + self.station_num["jmp"]
+        self.index["add"] = self.index["beq"] + self.station_num["beq"]
+        self.index["sub"] = self.index["beq"] + self.station_num["beq"]
+        self.index["addi"] = self.index["beq"] + self.station_num["beq"]
+        self.index["nand"] = self.index["add"] + self.station_num["add"]
+        self.index["mult"] = self.index["nand"] + self.station_num["nand"]
 
         self.used = {}
         self.used["lw"] = 0
@@ -25,7 +25,7 @@ class RS:
 
         self.station = []
 
-        for i in range(self.station_config["lw_num"]):
+        for i in range(self.station_num["lw"]):
             station_entry = {}
             station_entry["name"] = "lw" + str(i)
             station_entry["busy"] = False
@@ -38,7 +38,7 @@ class RS:
             station_entry["A"] = 0
             self.station.append(station_entry)
 
-        for i in range(self.station_config["sw_num"]):
+        for i in range(self.station_num["sw"]):
             station_entry = {}
             station_entry["name"] = "sw" + str(i)
             station_entry["busy"] = False
@@ -51,7 +51,7 @@ class RS:
             station_entry["A"] = 0
             self.station.append(station_entry)
 
-        for i in range(self.station_config["jmp_num"]):
+        for i in range(self.station_num["jmp"]):
             station_entry = {}
             station_entry["name"] = "jmp" + str(i)
             station_entry["busy"] = False
@@ -64,7 +64,7 @@ class RS:
             station_entry["A"] = 0
             self.station.append(station_entry)
 
-        for i in range(self.station_config["beq_num"]):
+        for i in range(self.station_num["beq"]):
             station_entry = {}
             station_entry["name"] = "beq" + str(i)
             station_entry["busy"] = False
@@ -77,7 +77,7 @@ class RS:
             station_entry["A"] = 0
             self.station.append(station_entry)
 
-        for i in range(self.station_config["add_num"]):
+        for i in range(self.station_num["add"]):
             station_entry = {}
             station_entry["name"] = "add" + str(i)
             station_entry["busy"] = False
@@ -90,7 +90,7 @@ class RS:
             station_entry["A"] = 0
             self.station.append(station_entry)
 
-        for i in range(self.station_config["nand_num"]):
+        for i in range(self.station_num["nand"]):
             station_entry = {}
             station_entry["name"] = "nand" + str(i)
             station_entry["busy"] = False
@@ -103,7 +103,7 @@ class RS:
             station_entry["A"] = 0
             self.station.append(station_entry)
 
-        for i in range(self.station_config["mult_num"]):
+        for i in range(self.station_num["mult"]):
             station_entry = {}
             station_entry["name"] = "mult" + str(i)
             station_entry["busy"] = False
@@ -131,7 +131,7 @@ class RS:
         self.station[self.index[name] + index]["busy"] = True
         self.station[self.index[name] + index]["op"] = name
         self.station[self.index[name] + index]["Vj"] = Vj if (Qj == None) else 0
-        self.station[self.index[name] + index]["Vk"] = Vk if (Qj == None) else 0
+        self.station[self.index[name] + index]["Vk"] = Vk if (Qk == None) else 0
         self.station[self.index[name] + index]["Qj"] = 0 if (Qj == None) else Qj
         self.station[self.index[name] + index]["Qk"] = 0 if (Qk == None) else Qk
         self.station[self.index[name] + index]["dest"] = dest
@@ -144,4 +144,11 @@ class RS:
         else:
             self.used[name] += 1
 
-        #availabel with type
+    def availabel(self, name):
+        if (name == "add" or name == "sub" or name == "addi"):
+            return self.used["add"] < self.station_num["add"]
+        elif (name == "jmp" or name == "jalr" or name == "ret"):
+            return self.used["jmp"] < self.station_num["jmp"]
+        else:
+            return self.used[name] < self.station_num[name]
+        

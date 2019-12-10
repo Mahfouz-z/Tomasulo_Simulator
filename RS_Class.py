@@ -153,7 +153,7 @@ class RS:
         else:
             self.used[name] += 1
 
-    def availabel(self, name):
+    def available(self, name):
         if (name == "add" or name == "sub" or name == "addi"):
             return self.used["add"] < self.station_num["add"]
         elif (name == "jmp" or name == "jalr" or name == "ret"):

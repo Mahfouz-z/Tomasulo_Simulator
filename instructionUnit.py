@@ -34,8 +34,14 @@ class instruction:
         self.temp= self.temp.split(" ")
         self.instType=self.temp[0]
         self.r1=self.temp[1]
-        self.r2=self.temp[2]
-        self.imm=self.temp[2]
+        if(self.temp[2][0]=='x'):
+            self.r2=self.temp[2]
+        else:
+            self.r2='x0'
+        if(self.temp[2][0]!='x'):
+            self.imm=int(self.temp[2])
+        else:
+            self.imm=0
         self.r3=self.temp[3]
         
         

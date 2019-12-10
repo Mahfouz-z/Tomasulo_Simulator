@@ -14,4 +14,11 @@ class NAND:
     def count(self):
         self.counter-=1
         return self.counter
+
+    def ready(self):   
+        if(self.counter == 0):
+            return self.result
+        else:
+            return None 
+
         

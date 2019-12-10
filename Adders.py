@@ -8,8 +8,9 @@ class Adders:
        self.maxCounter = counter
        self.counter = -1 
 
-    def operation(self, result, operand1, operand2, op, counter):
+    def operation(self, index, operand1, operand2, op, counter):
         self.counter = self.maxCounter
+        self.index = index
         if op =="add": 
             self.result = operand1+ operand2
         elif op =="sub":
@@ -24,7 +25,7 @@ class Adders:
         
     def ready(self):   
         if(self.counter == 0):
-            return True
+            return self.result, self.index
         else:
             return None 
         

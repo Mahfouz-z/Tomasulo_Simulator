@@ -1,11 +1,12 @@
 class LW: 
     def __init__ (self, counter):
         self.state = True
-        self.counter= counter
+        self.counter= -1
         self.operand1= 0
         self.offset= 0
         self.address= 0
         self.destination = 0
+        self.maxCounter = counter
 
     def getAddress (self, operand1, offset):
         self.address = operand1 + offset
@@ -15,6 +16,6 @@ class LW:
         self.destination= destinationIn
         return self.destination
 
-    def count(self:
+    def count(self):
         self.counter-=1
         return self.counter 

@@ -11,17 +11,17 @@ class insrtuctionUnit:
             self.instructionList.append(q)
         self.issueList=[]
         
-    def getIssue(self, n):
+    def getIssue(self, n, addr):
         issue=[]
         while (n>0):
-            issue.append(self.instructionList.pop(0))
+            issue.append(self.instructionList.pop(addr))
             n-=1
         self.issueList=issue
         return issue
-    def revIssue(self, n):
+    def revIssue(self, n, addr):
         self.issueList.reverse()
         while(n>0):
-            self.instructionList.insert(0, self.issueList.pop(0))
+            self.instructionList.insert(addr, self.issueList.pop(0))
             n-=1
             
     

@@ -5,10 +5,23 @@ class RS:
         self.index["lw"] = 0
         self.index["sw"] = self.index["lw"] + self.station_config["lw_num"]
         self.index["jmp"] = self.index["sw"] + self.station_config["sw_num"]
+        self.index["jalr"] = self.index["sw"] + self.station_config["sw_num"]
+        self.index["ret"] = self.index["sw"] + self.station_config["sw_num"]
         self.index["beq"] = self.index["jmp"] + self.station_config["jmp_num"]
         self.index["add"] = self.index["beq"] + self.station_config["beq_num"]
+        self.index["sub"] = self.index["beq"] + self.station_config["beq_num"]
+        self.index["addi"] = self.index["beq"] + self.station_config["beq_num"]
         self.index["nand"] = self.index["add"] + self.station_config["add_num"]
         self.index["mult"] = self.index["nand"] + self.station_config["nand_num"]
+
+        self.used = {}
+        self.used["lw"] = 0
+        self.used["sw"] = 0
+        self.used["jmp"] = 0
+        self.used["beq"] = 0
+        self.used["add"] = 0
+        self.used["nand"] = 0
+        self.used["mult"] = 0
 
         self.station = []
 
@@ -112,3 +125,23 @@ class RS:
         self.station[self.index[name] + index]["Qk"] = Qk
         self.station[self.index[name] + index]["dest"] = dest
         self.station[self.index[name] + index]["A"] = A
+
+    def issue(self, name, Vj, Vk, Qj, Qk, dest, A):
+        index = self.used["add"] if (name == "add" or name == "sub" or name == "addi") else self.used["jmp"] if (name == "jmp" or name == "jalr" or name == "ret") else self.used[name]
+        self.station[self.index[name] + index]["busy"] = True
+        self.station[self.index[name] + index]["op"] = name
+        self.station[self.index[name] + index]["Vj"] = Vj if (Qj == None) else 0
+        self.station[self.index[name] + index]["Vk"] = Vk if (Qj == None) else 0
+        self.station[self.index[name] + index]["Qj"] = 0 if (Qj == None) else Qj
+        self.station[self.index[name] + index]["Qk"] = 0 if (Qk == None) else Qk
+        self.station[self.index[name] + index]["dest"] = dest
+        self.station[self.index[name] + index]["A"] = A
+
+        if (name == "add" or name == "sub" or name == "addi"):
+            self.used["add"] += 1
+        elif (name == "jmp" or name == "jalr" or name == "ret"):
+            self.used["jmp"] += 1
+        else:
+            self.used[name] += 1
+
+        #availabel with type

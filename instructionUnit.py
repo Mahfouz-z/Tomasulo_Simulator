@@ -14,9 +14,9 @@ class insrtuctionUnit:
     def getIssue(self, n):
         issue=[]
         while (n>0):
-            self.issueList.append(self.instructionList.pop(0))
+            issue.append(self.instructionList.pop(0))
             n-=1
-        issue=self.issueList
+        self.issueList=issue
         return issue
     def revIssue(self, n):
         self.issueList.reverse()

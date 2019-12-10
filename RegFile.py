@@ -1,4 +1,4 @@
 class RegFile: 
-   def __init__(self, regNumber, data):
-       self.regNumber = 0
+   def __init__(self, ROBNumber, data):
+       self.ROBNumber = 0
        self.data = 0  

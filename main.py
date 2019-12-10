@@ -29,7 +29,7 @@ for i in range(8):
     reg["x"+ str(i)]=RegFile(None, 0)
 clk = 0
 pc = 0
-numberOfIssues = 4
+numberOfIssues = 2
 
 
 
@@ -41,7 +41,13 @@ for i in range(numberOfIssues):
         if(ROB0.check_available() >= 1):
             dest=ROB0.initiate_entry(issue[0])
             RS0.issue(instType, reg[issue[0].r2].data, reg[issue[0].r3].data, reg[issue[0].r2].ROBNumber, reg[issue[0].r3].ROBNumber, dest, reg[issue[0].r3].data+int(issue[0].imm)  )
-            pc+=1
+            if(instType == 'beq'):
+                if(int(issue[0].imm)<0):
+                    pc=pc+int(issue[0].imm)
+                else:
+                    pc+=1
+            else:    
+                pc+=1
         else:
             break     
     else:

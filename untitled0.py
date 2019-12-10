@@ -9,6 +9,6 @@ from instructionUnit import *
 
 line = "inst.txt"
 listt = insrtuctionUnit(line)
-i=listt.getIssue(2)
-#listt.revIssue(2)
+i=listt.getIssue(3)
+listt.revIssue(2)
 p=listt.getIssue(1)

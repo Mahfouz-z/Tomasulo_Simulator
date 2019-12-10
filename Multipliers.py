@@ -12,5 +12,5 @@ class Multipliers:
         return self.result
          
     def count(self,counter):
-        self.counter++
+        self.counter+=1
         return counter 

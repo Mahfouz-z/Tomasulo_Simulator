@@ -30,3 +30,5 @@ class ROB:
             self.buffer[self.tail]["Dest"] = inst.r1
             self.buffer[self.tail]["Value"] = "unkown"
             self.tail += 1
+            return (self.tail-1)
+       

@@ -24,16 +24,28 @@ config["mult"]=2
 
 ROB0 = ROB()
 RS0 = RS(config) 
+
+# reg_file
 reg={}
 for i in range(8):
     reg["x"+ str(i)]=RegFile(None, 0)
+
 clk = 0
 pc = 0
-numberOfIssues = 2
 
+numberOfIssues = 2
+stationNumber = RS0.station_num_total()
 
 
 #while True:
+
+#simulating execute stage
+for i in range(stationNumber):
+    if(RS0.ready(i)):
+        RS0.execute(i)
+        
+
+#simulating issue stage
 for i in range(numberOfIssues):
     issue = instQueue0.getIssue(1, pc)
     instType = issue[0].instType

@@ -5,13 +5,17 @@ class Multipliers:
        self.operand1 = 0 
        self.operand2= 0
        self.state = True
-       self.counter = counter  
+       self.maxCounter = counter  
+       self.counter
 
     def mul(self, result, operand1, operand2):
         self.result = operand1 * operand2
-        return result
-
+        
     def count(self):
         self.counter-=1
-        return self.counter
-        
+
+    def ready(self):   
+        if(self.counter == 0):
+            return self.result
+        else:
+            return None 

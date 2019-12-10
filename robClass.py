@@ -26,7 +26,7 @@ class ROB:
             return self.available 
 
         def initiate_entry(self, inst):
-            self.buffer[self.tail]["Type"] = get_inst_type(inst)
-            self.buffer[self.tail]["Dest"] = get_inst_dest(inst)
+            self.buffer[self.tail]["Type"] = inst.instType
+            self.buffer[self.tail]["Dest"] = inst.r1
             self.buffer[self.tail]["Value"] = "unkown"
             self.tail += 1

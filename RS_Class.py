@@ -131,7 +131,7 @@ class RS:
         self.station[self.index[name] + index]["busy"] = True
         self.station[self.index[name] + index]["op"] = name
         self.station[self.index[name] + index]["Vj"] = Vj if (Qj == None) else 0
-        self.station[self.index[name] + index]["Vk"] = Vk if (Qj == None) else 0
+        self.station[self.index[name] + index]["Vk"] = Vk if (Qk == None) else 0
         self.station[self.index[name] + index]["Qj"] = 0 if (Qj == None) else Qj
         self.station[self.index[name] + index]["Qk"] = 0 if (Qk == None) else Qk
         self.station[self.index[name] + index]["dest"] = dest

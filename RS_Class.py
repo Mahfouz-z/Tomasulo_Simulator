@@ -31,6 +31,15 @@ class RS:
         self.used["add"] = 0
         self.used["nand"] = 0
         self.used["mult"] = 0
+        
+        self.cycle = {}
+        self.cycle["lw"] = 0
+        self.cycle["sw"] = 0
+        self.cycle["jmp"] = 0
+        self.cycle["beq"] = 0
+        self.cycle["add"] = 0
+        self.cycle["nand"] = 0
+        self.cycle["mult"] = 0
 
         self.station = []
 
@@ -151,7 +160,7 @@ class RS:
         self.station[self.index[name] + index]["status"] = status
 
     def issue(self, name, Vj, Vk, Qj, Qk, dest, A):
-        index = self.used["add"] if (name == "add" or name == "sub" or name == "addi") else self.used["jmp"] if (name == "jmp" or name == "jalr" or name == "ret") else self.used[name]
+        index = self.cycle["add"] % self.station_num["add"] if (name == "add" or name == "sub" or name == "addi") else self.cycle["jmp"] % self.station_num["jmp"] if (name == "jmp" or name == "jalr" or name == "ret") else self.cycle[name] % self.station_num[name]
         self.station[self.index[name] + index]["busy"] = True
         self.station[self.index[name] + index]["op"] = name
         self.station[self.index[name] + index]["Vj"] = Vj if (Qj == -1 or Qj== "init") else 0
@@ -164,10 +173,13 @@ class RS:
 
         if (name == "add" or name == "sub" or name == "addi"):
             self.used["add"] += 1
+            self.cycle["add"] += 1
         elif (name == "jmp" or name == "jalr" or name == "ret"):
             self.used["jmp"] += 1
+            self.cycle["jmp"] += 1
         else:
             self.used[name] += 1
+            self.cycle[name] += 1
 
     def available(self, name):
         if (name == "add" or name == "sub" or name == "addi"):
@@ -198,10 +210,13 @@ class RS:
             self.station[index]["funct_unit"].operation(self.station[index]["Vj"], self.station[index]["Vk"], self.station[index]["op"], pc)
         elif(op == "nand"):
             self.station[index]["funct_unit"].Nand(self.station[index]["Vj"], self.station[index]["Vk"])
+        elif(op == "beq"):
+            self.station[index]["funct_unit"].branch(self.station[index]["Vj"], self.station[index]["Vk"], pc, self.station[index]["A"])
 
         #return self.station[index]["op"], self.station[index]["Qj"], self.station[index]["Qk"], self.station[index]["A"], index
 
     def write(self, index):
+        self.used[self.station[index]["op"]]-=1
         self.station[index]["busy"] = False
         self.station[index]["op"] = "init"
         self.station[index]["Vj"] = 0
@@ -211,6 +226,7 @@ class RS:
         self.station[index]["dest"] = 0
         self.station[index]["A"] = 0
         self.station[index]["status"] = "init"
+        
 
     def get_status(self, index):
         return self.station[index]["status"] 

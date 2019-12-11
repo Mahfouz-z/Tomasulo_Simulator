@@ -36,12 +36,17 @@ class ROB:
             self.buffer[self.head]["Type"] = "init"
             self.buffer[self.head]["Dest"] = "init"
             self.buffer[self.head]["Value"] = "init"
+            self.buffer[self.head]["Ready"] = False
             self.head = (self.head+1)%8
             self.available+=1
             
         def upd_entry(self, index, res):
             self.buffer[index]["Value"]=res
             self.buffer[index]["Ready"]=True
+        def checkHead(self):
+            if(self.buffer[self.head]["Ready"]):
+                return self.buffer[self.head]
+            else: return None
             
             
        

@@ -12,23 +12,19 @@ class BEQ:
 
 
 
-    def branch (self, operand1, operand2,  pc, offset, index):
+    def branch (self, operand1, operand2,  pc, offset):
         self.counter= self.maxCounter
         if operand1 == operand2: 
-            self.pc= pc + offset
+            self.pc= offset
             self.taken = True 
         else:
             self.pc= pc + 1
             self.taken = False
-        self.index = index
         self.result= self.pc
 
     def count(self):
         self.counter-=1
         
-
-    def getIndex(self):
-        return self.index    
    
     def getTaken(self):
         return self.taken

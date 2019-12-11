@@ -49,12 +49,22 @@ stationsNumber = RS0.station_num_total()
 
 #### We better add the immediate calculation of the load and store to the reservation station class and make it part of the RS to be ready 
 
-while (clk<10):
+while (clk<12):
 
-    #simulating execute stage
-
+    #simulation commit stage
+    commit=ROB0.checkHead()
+    if(commit!=None):
+        robType=commit["Type"]
+        if(robType=="add" or robType=="addi" or robType== "sub" or robType=="nand"):
+            rd=commit["Dest"]
+            reg[rd].data=commit["Value"]
+            reg[rd].ROBNumber=-1
+            ROB0.remove_entry()
+        elif(robType=='beq'):
+            ROB0.remove_entry()
+            
     
-
+    #simulating execute and writing stage
     for i in range(stationsNumber):
         if(RS0.get_status(i) == "executing"):
             result = RS0.decFuncUnitCount(i)
@@ -81,9 +91,8 @@ while (clk<10):
                     RS0.issue(instType, reg[issue[0].r2].data, reg[issue[0].r3].data, reg[issue[0].r2].ROBNumber, reg[issue[0].r3].ROBNumber, dest, int(issue[0].imm))
                     reg[issue[0].r1].ROBNumber=dest
                     if(instType == 'beq'):
-                        if(int(issue[0].imm)<0):
+                        if(int(issue[0].imm)<=pc):
                             pc=int(issue[0].imm)
-                            
                         else:
                             pc+=1
                     else:    

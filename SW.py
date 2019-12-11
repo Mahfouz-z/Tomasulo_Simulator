@@ -10,14 +10,10 @@ class SW:
         
         
 
-    def getAddress (self, operand1, offset, index):
+    def getAddress (self, operand1, offset):
         self.counter = self.maxCounter
         self.address = operand1 + offset
-        self.index = index
         self.result = self.address
-
-    def getIndex(self):
-        return self.index
 
     def count(self):
         self.counter-=1

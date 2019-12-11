@@ -12,9 +12,8 @@ class JMP:
        self.index=0 
 
 
-    def operation(self, operand1, operand2, op, pc, index):
+    def operation(self, operand1, operand2, op, pc):
         self.counter= self.maxCounter
-        self.index = index
         if op == "jalr": 
             self.result =  pc + 4
             self.address = (operand1 + operand2) & -2

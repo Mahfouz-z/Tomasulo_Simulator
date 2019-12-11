@@ -8,13 +8,10 @@ class Multipliers:
        self.maxCounter = counter
        self.index = 0  
 
-    def mul(self, operand1, operand2, index):
+    def mul(self, operand1, operand2):
         self.counter = self.maxCounter
         self.result = operand1 * operand2
-        self.index = index
 
-    def getIndex(self):
-        return self.index
         
     def count(self):
         self.counter -= 1

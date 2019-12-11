@@ -54,33 +54,23 @@ numberOfIssues = 2
 stationsNumber = RS0.station_num_total()
 
 
+#### We better add the immediate calculation of the load and store to the reservation station class and make it part of the RS to be ready 
 
 while (clk<6):
 
     #simulating execute stage
 
     for i in range(stationsNumber):
+        if(RS0.get_status(i) == "executing"):
+            result = RS0.decFuncUnitCount(i)
+        if(RS0.get_status(i) == "done"):
+            cdbData = {}
+            cdbData["result"] = result
+            cdbData["targetRob"] = RS0.getTargetRob(i) 
+            RS0.write(i)
         if(RS0.ready(i)):
-            RS0.execute(i)
-            oper=RS0.station[i]["op"]
-            if(oper == 'add' or oper =='sub'or oper=='addi'):
-                add0.operation(RS0.station[i]["Vj"],RS0.station[i]["Vk"], RS0.station[i]["op"], i)
-            if(oper == 'mult'):
-                mul0.mul(RS0.station[i]["Vj"],RS0.station[i]["Vk"], i)
-            if(oper =='nand'):
-                nand0.Nand(RS0.station[i]["Vj"],RS0.station[i]["Vk"], i)
-            if(oper == 'lw'):
-                lw0.getAddress(RS0.station[i]["Vj"],RS0.station[i]["Vk"], RS0.station[i]["op"], i)
-            if(oper == 'sw'):
-                sw0.getAddress(RS0.station[i]["Vj"],RS0.station[i]["Vk"], RS0.station[i]["op"], i)
-            if(oper == 'jmp' or oper =='jalr'or oper =='ret'):
-                jmp0.operation(RS0.station[i]["Vj"],RS0.station[i]["Vk"], RS0.station[i]["op"], pc, i)
-            if(oper == 'beq'):
-                beq0.branch(RS0.station[i]["Vj"],RS0.station[i]["Vk"], pc, RS0.station[i]["A"], i)
-                
-            
-            
-    
+            RS0.execute(i, pc)
+
     
     #simulating issue stage
     for i in range(numberOfIssues):

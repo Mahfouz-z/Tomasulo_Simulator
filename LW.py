@@ -10,17 +10,13 @@ class LW:
         self.counter = counter
         self.result = 0
 
-    def getAddress (self, operand1, offset, index):
+    def getAddress (self, operand1, offset):
         self.address = operand1 + offset
-        self.index = index
         return self.address
 
     def load (self, destinationIn):
         self.destination= destinationIn
         self.result = self.destination
-
-    def getIndex(self):
-        return self.index
         
     def count(self):
         self.counter -= 1

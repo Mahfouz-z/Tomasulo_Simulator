@@ -1,3 +1,12 @@
+from Multipliers import *
+from NAND import NAND
+from Multipliers import *
+from Adders import *
+from BEQ import *
+from JMP import *
+from LW import *
+from SW import *
+
 class RS:
     def __init__(self, station_num):
         self.station_num = station_num #TODO take it from a file
@@ -37,6 +46,7 @@ class RS:
             station_entry["dest"] = 0
             station_entry["A"] = 0
             station_entry["status"] = "init"
+            station_entry["funct_unit"] = LW(2)
             self.station.append(station_entry)
 
         for i in range(self.station_num["sw"]):
@@ -51,6 +61,7 @@ class RS:
             station_entry["dest"] = 0
             station_entry["A"] = 0
             station_entry["status"] = "init"
+            station_entry["funct_unit"] = SW(2)
             self.station.append(station_entry)
 
         for i in range(self.station_num["jmp"]):
@@ -65,6 +76,7 @@ class RS:
             station_entry["dest"] = 0
             station_entry["A"] = 0
             station_entry["status"] = "init"
+            station_entry["funct_unit"] = JMP(1)
             self.station.append(station_entry)
 
         for i in range(self.station_num["beq"]):
@@ -79,6 +91,7 @@ class RS:
             station_entry["dest"] = 0
             station_entry["A"] = 0
             station_entry["status"] = "init"
+            station_entry["funct_unit"] = BEQ(1)
             self.station.append(station_entry)
 
         for i in range(self.station_num["add"]):
@@ -93,6 +106,7 @@ class RS:
             station_entry["dest"] = 0
             station_entry["A"] = 0
             station_entry["status"] = "init"
+            station_entry["funct_unit"] = Adders(2)
             self.station.append(station_entry)
 
         for i in range(self.station_num["nand"]):
@@ -107,6 +121,7 @@ class RS:
             station_entry["dest"] = 0
             station_entry["A"] = 0
             station_entry["status"] = "init"
+            station_entry["funct_unit"] = NAND(1)
             self.station.append(station_entry)
 
         for i in range(self.station_num["mult"]):
@@ -121,6 +136,7 @@ class RS:
             station_entry["dest"] = 0
             station_entry["A"] = 0
             station_entry["status"] = "init"
+            station_entry["funct_unit"] = Multipliers(10)
             self.station.append(station_entry)
 
     def update_station(self, name, index, busy, op, Vj, Vk, Qj, Qk, dest, A, status):
@@ -167,9 +183,21 @@ class RS:
     def station_num_total(self):
         return self.index["mult"] + self.station_num["mult"]
 
-    def execute(self, index):
-        self.station[index]["status"] = "executed"
-        return self.station[index]["op"], self.station[index]["Qj"], self.station[index]["Qk"], self.station[index]["A"], index
+    def execute(self, index, pc):
+        self.station[index]["status"] = "executing"
+        op = self.station[index]["op"]
+
+        ## Executing the load and store is not done by the provided class. The class calculates the address which isn't the functional unit
+        ## of load and store word. The function is to deal with memorey and add data to it and get data from it.
+
+        if(op == "add" or op == "sub" or op == "addi"):
+            self.station[index]["funct_unit"].operation(self.station[index]["Vj"], self.station[index]["Vj"], self.station[index]["op"])
+        elif(op == "jalr" or op == "ret" or op == "jmp"):
+            self.station[index]["funct_unit"].operation(self.station[index]["Vj"], self.station[index]["Vj"], self.station[index]["op"], pc)
+        elif(op == "nand"):
+            self.station[index]["funct_unit"].NAND(self.station[index]["Vj"], self.station[index]["Vj"], self.station[index]["op"])
+
+        #return self.station[index]["op"], self.station[index]["Qj"], self.station[index]["Qk"], self.station[index]["A"], index
 
     def write(self, index):
         self.station[index]["busy"] = False
@@ -181,3 +209,20 @@ class RS:
         self.station[index]["dest"] = 0
         self.station[index]["A"] = 0
         self.station[index]["status"] = "init"
+
+    def get_status(self, index):
+        return self.station[index]["status"] 
+
+    def decFuncUnitCount(self, index):
+        self.station[index]["fun_unit"].count()
+        result = self.station[index]["fun_unit"].ready()
+        if(result != None):
+            self.station[index]["status"] = "done"
+            return result
+        else:
+            return None
+
+    def getTargetRob(self, index):
+        return self.station[index]["dest"]
+
+

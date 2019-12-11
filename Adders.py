@@ -9,9 +9,8 @@ class Adders:
        self.maxCounter = counter
        self.index = 0
 
-    def operation(self, operand1, operand2, op, index):
+    def operation(self, operand1, operand2, op):
         self.counter = self.maxCounter
-        self.index = index
         if op =="add": 
             self.result = operand1 + operand2
         elif op =="sub":
@@ -21,8 +20,6 @@ class Adders:
         else : 
             self.result = 0
          
-    def getIndex(self):
-        return self.index
         
     def count(self):
         self.counter -= 1

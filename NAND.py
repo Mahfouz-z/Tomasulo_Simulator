@@ -8,14 +8,10 @@ class NAND:
        self.maxCounter = counter
 
 
-    def Nand(self, operand1, operand2, index):
+    def Nand(self, operand1, operand2):
         self.counter = self.maxCounter
         self.result = not (operand1 and operand2)
-        self.index= index
         
-
-    def getIndex(self):
-        return self.index
 
     def count(self):
         self.counter-=1

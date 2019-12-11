@@ -29,6 +29,6 @@ class ROB:
             self.buffer[self.tail]["Type"] = inst.instType
             self.buffer[self.tail]["Dest"] = inst.r1
             self.buffer[self.tail]["Value"] = "unkown"
-            self.tail += 1
+            self.tail = (self.tail+1)%8
             return (self.tail-1)
        

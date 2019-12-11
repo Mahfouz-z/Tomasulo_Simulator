@@ -27,3 +27,9 @@ class LW:
             return self.result
         else:
             return None
+        
+class LW_FunctUnit:
+    def __init__ (self, counter):
+        self.maxCounter = counter
+    
+    def accessMem(self, base_register, imm):

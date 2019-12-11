@@ -1,25 +1,28 @@
 class BEQ: 
-    def __init__(self,  counter,):
+    def __init__(self,  counter):
        self.operand1 = 0 
        self.operand2= 0
        self.state = True
        self.counter =counter
        self.pc= 0
        self.offset= 0
+       self.index = 0
 
 
-    def branch (self, operand1, operand2,  pc, offset):
+    def branch (self, operand1, operand2,  pc, offset,index):
         if operand1 == operand2: 
             self.pc= pc + offset 
         else:
             self.pc= pc + 4
-
+        self.index = index
         return pc
 
     def count(self):
         self.counter-=1
         return self.counter
-        
+
+    def getIndex(self):
+        return self.index    
 
     def getPC(self, pcIn):
         self.pc = pcIn

@@ -6,15 +6,20 @@ class LW:
         self.offset= 0
         self.address= 0
         self.destination = 0
+        self.index= 0
 
-    def getAddress (self, operand1, offset):
+    def getAddress (self, operand1, offset, index):
         self.address = operand1 + offset
+        self.index = index
         return self.address
 
     def load (self, destinationIn):
         self.destination= destinationIn
         return self.destination
 
-    def count(self:
+    def getIndex(self):
+        return self.index
+        
+    def count(self):
         self.counter-=1
         return self.counter 

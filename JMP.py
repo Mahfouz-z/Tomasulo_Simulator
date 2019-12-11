@@ -8,9 +8,10 @@ class JMP:
        self.counter =counter
        self.pc= 0
        self.address= 0
+       self.index=0 
 
 
-    def operation(self, result, operand1, operand2, address, op, pc):
+    def operation(self, result, operand1, operand2, address, op, pc, index):
 
         if op =="jalr": 
             self.result =  pc + 4
@@ -24,14 +25,16 @@ class JMP:
         else : 
             self.result= 0
             self.address = 0
-        
+        self.index = index
         
         return result, address 
 
-   def count(self):
+    def count(self):
         self.counter-=1
         return self.counter
        
+    def getIndex(self):
+        return self.index
 
     def getPC(self, pcIn):
         self.pc = pcIn

@@ -7,10 +7,14 @@ class SW:
         self.address= 0
         
 
-    def getAddress (self, operand1, offset):
+    def getAddress (self, operand1, offset, index):
         self.address = operand1 + offset
+        self.index = index
         return self.address
-    
+
+    def getIndex(self):
+        return self.index
+        
     def count(self):
         self.counter-=1
         return self.counter

@@ -6,8 +6,9 @@ class Adders:
        self.state = True
        self.op = ""
        self.counter =counter
+       self.index = 0
 
-    def operation(self, result, operand1, operand2, op):
+    def operation(self, result, operand1, operand2, op, index):
         if op =="add": 
             self.result = operand1+ operand2
         elif op =="sub":
@@ -16,7 +17,11 @@ class Adders:
             self.result = operand1+ operand2
         else : 
             self.result= 0
+        self.index = index
         return result
+         
+    def getIndex(self):
+        return self.index
 
     def count(self):
         self.counter-=1

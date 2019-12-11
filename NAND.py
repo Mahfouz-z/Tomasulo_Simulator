@@ -7,9 +7,13 @@ class NAND:
        self.counter =counter
 
 
-    def Nand(self, result, operand1, operand2):
+    def Nand(self, result, operand1, operand2, index):
         self.result = not (operand1 and operand2)
+        self.index= index
         return self.result
+
+    def getIndex(self):
+        return self.index
 
     def count(self):
         self.counter-=1

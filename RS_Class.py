@@ -1,6 +1,6 @@
 class RS:
     def __init__(self, station_num):
-        self.station_num = station_num #take it from a file
+        self.station_num = station_num #TODO take it from a file
         self.index = {}
         self.index["lw"] = 0
         self.index["sw"] = self.index["lw"] + self.station_num["lw"]
@@ -36,6 +36,7 @@ class RS:
             station_entry["Qk"] = "init"
             station_entry["dest"] = 0
             station_entry["A"] = 0
+            station_entry["status"] = "init"
             self.station.append(station_entry)
 
         for i in range(self.station_num["sw"]):
@@ -49,6 +50,7 @@ class RS:
             station_entry["Qk"] = "init"
             station_entry["dest"] = 0
             station_entry["A"] = 0
+            station_entry["status"] = "init"
             self.station.append(station_entry)
 
         for i in range(self.station_num["jmp"]):
@@ -62,6 +64,7 @@ class RS:
             station_entry["Qk"] = "init"
             station_entry["dest"] = 0
             station_entry["A"] = 0
+            station_entry["status"] = "init"
             self.station.append(station_entry)
 
         for i in range(self.station_num["beq"]):
@@ -75,6 +78,7 @@ class RS:
             station_entry["Qk"] = "init"
             station_entry["dest"] = 0
             station_entry["A"] = 0
+            station_entry["status"] = "init"
             self.station.append(station_entry)
 
         for i in range(self.station_num["add"]):
@@ -88,6 +92,7 @@ class RS:
             station_entry["Qk"] = "init"
             station_entry["dest"] = 0
             station_entry["A"] = 0
+            station_entry["status"] = "init"
             self.station.append(station_entry)
 
         for i in range(self.station_num["nand"]):
@@ -101,6 +106,7 @@ class RS:
             station_entry["Qk"] = "init"
             station_entry["dest"] = 0
             station_entry["A"] = 0
+            station_entry["status"] = "init"
             self.station.append(station_entry)
 
         for i in range(self.station_num["mult"]):
@@ -114,9 +120,10 @@ class RS:
             station_entry["Qk"] = "init"
             station_entry["dest"] = 0
             station_entry["A"] = 0
+            station_entry["status"] = "init"
             self.station.append(station_entry)
 
-    def update_station(self, name, index, busy, op, Vj, Vk, Qj, Qk, dest, A):
+    def update_station(self, name, index, busy, op, Vj, Vk, Qj, Qk, dest, A, status):
         self.station[self.index[name] + index]["busy"] = busy
         self.station[self.index[name] + index]["op"] = op
         self.station[self.index[name] + index]["Vj"] = Vj
@@ -125,6 +132,7 @@ class RS:
         self.station[self.index[name] + index]["Qk"] = Qk
         self.station[self.index[name] + index]["dest"] = dest
         self.station[self.index[name] + index]["A"] = A
+        self.station[self.index[name] + index]["status"] = status
 
     def issue(self, name, Vj, Vk, Qj, Qk, dest, A):
         index = self.used["add"] if (name == "add" or name == "sub" or name == "addi") else self.used["jmp"] if (name == "jmp" or name == "jalr" or name == "ret") else self.used[name]
@@ -136,6 +144,7 @@ class RS:
         self.station[self.index[name] + index]["Qk"] = 0 if (Qk == None) else Qk
         self.station[self.index[name] + index]["dest"] = dest
         self.station[self.index[name] + index]["A"] = A
+        self.station[self.index[name] + index]["status"] = "issued"
 
         if (name == "add" or name == "sub" or name == "addi"):
             self.used["add"] += 1
@@ -151,4 +160,24 @@ class RS:
             return self.used["jmp"] < self.station_num["jmp"]
         else:
             return self.used[name] < self.station_num[name]
-        
+
+    def ready(self, index):
+        return ((self.station[index]["Qj"] == 0) and (self.station[index]["Qj"] == 0) and (self.station[index]["status"] == "issued"))
+
+    def station_num_total(self):
+        return self.index["mult"] + self.station_num["mult"]
+
+    def execute(self, index):
+        self.station[index]["status"] = "executed"
+        return self.station[index]["op"], self.station[index]["Qj"], self.station[index]["Qk"], self.station[index]["A"], index
+
+    def write(self, index):
+        self.station[index]["busy"] = False
+        self.station[index]["op"] = "init"
+        self.station[index]["Vj"] = 0
+        self.station[index]["Vk"] = 0
+        self.station[index]["Qj"] = "init"
+        self.station[index]["Qk"] = "init"
+        self.station[index]["dest"] = 0
+        self.station[index]["A"] = 0
+        self.station[index]["status"] = "init"

@@ -5,36 +5,41 @@ class JMP:
        self.operand2= 0
        self.state = True
        self.op = ""
-       self.counter =counter
+       self.counter = counter
+       self.maxCounter = counter
        self.pc= 0
        self.address= 0
        self.index=0 
 
 
-    def operation(self, result, operand1, operand2, address, op, pc, index):
-
-        if op =="jalr": 
+    def operation(self, operand1, operand2, op, pc, index):
+        self.counter= self.maxCounter
+        self.index = index
+        if op == "jalr": 
             self.result =  pc + 4
             self.address = (operand1 + operand2) & -2
 
         elif op =="jmp": 
             self.address= operand1 + pc
-
+            self.result = 0
         elif op == "ret":
             self.address = (operand1 + operand2) & -2
+            self.result = 0
         else : 
             self.result= 0
             self.address = 0
-        self.index = index
         
-        return result, address 
-
     def count(self):
         self.counter-=1
-        return self.counter
        
     def getIndex(self):
         return self.index
 
-    def getPC(self, pcIn):
-        self.pc = pcIn
+    def getAddress(self):
+        return self.address
+
+    def ready(self):   
+        if(self.counter == 0):
+            return self.result
+        else:
+            return None

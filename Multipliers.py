@@ -6,17 +6,22 @@ class Multipliers:
        self.operand2= 0
        self.state = True
        self.counter = counter
+       self.maxCounter = counter
        self.index = 0  
 
-    def mul(self, result, operand1, operand2,index):
+    def mul(self, operand1, operand2, index):
+        self.counter = self.maxCounter
         self.result = operand1 * operand2
         self.index = index
-        return result
 
     def getIndex(self):
         return self.index
         
     def count(self):
-        self.counter-=1
-        return self.counter
-        
+        self.counter -= 1
+
+    def ready(self):   
+        if(self.counter == 0):
+            return self.result
+        else:
+            return None

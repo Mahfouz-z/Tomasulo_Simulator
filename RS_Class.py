@@ -169,6 +169,15 @@ class RS:
 
     def execute(self, index):
         self.station[index]["status"] = "executed"
-        return self.station[index]["op"], self.station[index]["Qj"], self.station[index]["Qk"], self.station[index]["A"]
+        return self.station[index]["op"], self.station[index]["Qj"], self.station[index]["Qk"], self.station[index]["A"], index
 
-    #def write(self, index)
+    def write(self, index):
+        self.station[index]["busy"] = False
+        self.station[index]["op"] = "init"
+        self.station[index]["Vj"] = 0
+        self.station[index]["Vk"] = 0
+        self.station[index]["Qj"] = "init"
+        self.station[index]["Qk"] = "init"
+        self.station[index]["dest"] = 0
+        self.station[index]["A"] = 0
+        self.station[index]["status"] = "init"

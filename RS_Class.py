@@ -190,8 +190,10 @@ class RS:
         ## Executing the load and store is not done by the provided class. The class calculates the address which isn't the functional unit
         ## of load and store word. The function is to deal with memorey and add data to it and get data from it.
 
-        if(op == "add" or op == "sub" or op == "addi"):
+        if(op == "add" or op == "sub"):
             self.station[index]["funct_unit"].operation(self.station[index]["Vj"], self.station[index]["Vk"], self.station[index]["op"])
+        elif(op=="addi"):
+            self.station[index]["funct_unit"].operation(self.station[index]["Vj"], self.station[index]["A"], self.station[index]["op"])
         elif(op == "jalr" or op == "ret" or op == "jmp"):
             self.station[index]["funct_unit"].operation(self.station[index]["Vj"], self.station[index]["Vk"], self.station[index]["op"], pc)
         elif(op == "nand"):

@@ -39,7 +39,7 @@ reg={}
 for i in range(8):
     reg["x"+ str(i)]=RegFile(None, 0)
 
-reg['x2'].data=5
+reg['x2'].data=7
 clk = 0
 pc = 0
 
@@ -49,7 +49,7 @@ stationsNumber = RS0.station_num_total()
 
 #### We better add the immediate calculation of the load and store to the reservation station class and make it part of the RS to be ready 
 
-while (clk<12):
+while (clk<10):
 
     #simulating execute stage
 
@@ -82,7 +82,8 @@ while (clk<12):
                     reg[issue[0].r1].ROBNumber=dest
                     if(instType == 'beq'):
                         if(int(issue[0].imm)<0):
-                            pc=pc+int(issue[0].imm)
+                            pc=int(issue[0].imm)
+                            
                         else:
                             pc+=1
                     else:    

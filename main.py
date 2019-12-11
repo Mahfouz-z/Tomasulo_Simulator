@@ -49,19 +49,20 @@ stationsNumber = RS0.station_num_total()
 
 #### We better add the immediate calculation of the load and store to the reservation station class and make it part of the RS to be ready 
 
-while (clk<8):
+while (clk<12):
 
     #simulation commit stage
-    commit=ROB0.checkHead()
-    if(commit!=None):
-        robType=commit["Type"]
-        if(robType=="add" or robType=="addi" or robType== "sub" or robType=="nand"):
-            rd=commit["Dest"]
-            reg[rd].data=commit["Value"]
-            reg[rd].ROBNumber=-1
-            ROB0.remove_entry()
-        elif(robType=='beq'):
-            ROB0.remove_entry()
+    for i in range (numberOfIssues):
+        commit=ROB0.checkHead()
+        if(commit!=None):
+            robType=commit["Type"]
+            if(robType=="add" or robType=="addi" or robType== "sub" or robType=="nand"):
+                rd=commit["Dest"]
+                reg[rd].data=commit["Value"]
+                reg[rd].ROBNumber=-1
+                ROB0.remove_entry()
+            elif(robType=='beq'):
+                ROB0.remove_entry()
             
     
     #simulating execute and writing stage
@@ -69,9 +70,6 @@ while (clk<8):
         if(RS0.get_status(i) == "executing"):
             result = RS0.decFuncUnitCount(i)
         if(RS0.get_status(i) == "done"):
-            #cdbData = {}
-            #cdbData["result"] = result
-            #cdbData["targetRob"] = RS0.getTargetRob(i) 
             robIndex=RS0.getTargetRob(i) 
             ROB0.upd_entry(robIndex,result)
             RS0.updRS(robIndex,result)

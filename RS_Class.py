@@ -216,7 +216,12 @@ class RS:
         #return self.station[index]["op"], self.station[index]["Qj"], self.station[index]["Qk"], self.station[index]["A"], index
 
     def write(self, index):
-        self.used[self.station[index]["op"]]-=1
+        operation=self.station[index]["op"]
+        if(operation=="addi" or operation=="sub"):
+            operation="add"
+        if(operation=="jalr" or operation== "ret"):
+            operation= "jmp"
+        self.used[operation]-=1
         self.station[index]["busy"] = False
         self.station[index]["op"] = "init"
         self.station[index]["Vj"] = 0

@@ -24,15 +24,19 @@ config["lw"]=2
 config["sw"]=2
 config["jmp"]=2
 config["beq"]=2
-config["add"]=2
+config["add"]=3
 config["nand"]=2
 config["mult"]=2
 
 
 ROB0 = ROB()
 RS0 = RS(config) 
-mul0=Multipliers(2)
-add0 = Adders(2)
+adder=[]
+mul=[]
+for i in range(config["mult"]):
+    mul.append(Multipliers(10))
+for i in range(config["add"]):
+    adder.append(Adders(2))
 nand0= NAND(1)
 lw0 = LW(3)
 sw0=SW(3)
@@ -63,15 +67,15 @@ while (clk<6):
                 RS0.execute(i)
                 oper=RS0.station[i]["op"]
                 if(oper == 'add' or oper =='sub'or oper=='addi'):
-                    add0.operation(RS0.station[i]["Vj"],RS0.station[i]["Vk"], RS0.station[i]["op"], i)
+                    adder[0].operation(RS0.station[i]["Vj"],RS0.station[i]["Vk"], RS0.station[i]["op"], i)
                 if(oper == 'mult'):
                     mul0.mul(RS0.station[i]["Vj"],RS0.station[i]["Vk"], i)
                 if(oper =='nand'):
                     nand0.Nand(RS0.station[i]["Vj"],RS0.station[i]["Vk"], i)
                 if(oper == 'lw'):
-                    lw0.getAddress(RS0.station[i]["Vj"],RS0.station[i]["Vk"], RS0.station[i]["op"], i)
+                    lw0.getAddress(RS0.station[i]["Vj"],RS0.station[i]["Vk"], i)
                 if(oper == 'sw'):
-                    sw0.getAddress(RS0.station[i]["Vj"],RS0.station[i]["Vk"], RS0.station[i]["op"], i)
+                    sw0.getAddress(RS0.station[i]["Vj"],RS0.station[i]["Vk"], i)
                 if(oper == 'jmp' or oper =='jalr'or oper =='ret'):
                     jmp0.operation(RS0.station[i]["Vj"],RS0.station[i]["Vk"], RS0.station[i]["op"], pc, i)
                 if(oper == 'beq'):

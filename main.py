@@ -24,7 +24,7 @@ config["lw"]=2
 config["sw"]=2
 config["jmp"]=2
 config["beq"]=2
-config["add"]=2
+config["add"]=3
 config["nand"]=2
 config["mult"]=2
 
@@ -56,7 +56,7 @@ stationsNumber = RS0.station_num_total()
 
 #### We better add the immediate calculation of the load and store to the reservation station class and make it part of the RS to be ready 
 
-while (clk<6):
+while (clk<3):
 
     #simulating execute stage
 
@@ -79,7 +79,7 @@ while (clk<6):
         if(RS0.available(instType)):
             if(ROB0.check_available() >= 1):
                 dest=ROB0.initiate_entry(issue[0])
-                RS0.issue(instType, reg[issue[0].r2].data, reg[issue[0].r3].data, reg[issue[0].r2].ROBNumber, reg[issue[0].r3].ROBNumber, dest, reg[issue[0].r3].data+int(issue[0].imm))
+                RS0.issue(instType, reg[issue[0].r2].data, reg[issue[0].r3].data, reg[issue[0].r2].ROBNumber, reg[issue[0].r3].ROBNumber, dest, int(issue[0].imm))
                 if(instType == 'beq'):
                     if(int(issue[0].imm)<0):
                         pc=pc+int(issue[0].imm)

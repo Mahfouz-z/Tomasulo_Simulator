@@ -49,7 +49,7 @@ stationsNumber = RS0.station_num_total()
 
 #### We better add the immediate calculation of the load and store to the reservation station class and make it part of the RS to be ready 
 
-while (clk<12):
+while (clk<8):
 
     #simulation commit stage
     commit=ROB0.checkHead()

@@ -18,7 +18,7 @@ class ROB:
                 buffer_entry["Type"] = "init"
                 buffer_entry["Dest"] = "init"
                 buffer_entry["Value"] = "init"
-                buffer_entry["Ready"] = "No"
+                buffer_entry["Ready"] = False
                 self.buffer.append(buffer_entry)
 
 
@@ -39,6 +39,9 @@ class ROB:
             self.head = (self.head+1)%8
             self.available+=1
             
+        def upd_entry(self, index, res):
+            self.buffer[index]["Value"]=res
+            self.buffer[index]["Ready"]=True
             
             
        

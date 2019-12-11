@@ -15,7 +15,7 @@ class insrtuctionUnit:
             if(q[len(q)-1]!=':'):
                 q=instruction(q)
                 if(q.imm.isdigit()!=1):
-                    q.imm=self.labeldict[q.imm]
+                    q.imm=self.labeldict[q.imm]+1
                 else: q.imm=int(q.imm)
                 self.instructionList.append(q)
            
@@ -35,7 +35,9 @@ class insrtuctionUnit:
             self.issueList.pop(0)
             n-=1
             
-    
+    def lastPC(self):
+        return len(self.instructionList)-1
+        
 class instruction:
     def __init__ (self, inst):
         self.temp=inst.replace(',', '')

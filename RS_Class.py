@@ -154,10 +154,10 @@ class RS:
         index = self.used["add"] if (name == "add" or name == "sub" or name == "addi") else self.used["jmp"] if (name == "jmp" or name == "jalr" or name == "ret") else self.used[name]
         self.station[self.index[name] + index]["busy"] = True
         self.station[self.index[name] + index]["op"] = name
-        self.station[self.index[name] + index]["Vj"] = Vj if (Qj == 0 or Qj== "init") else 0
-        self.station[self.index[name] + index]["Vk"] = Vk if (Qk == 0 or Qk== "init") else 0
-        self.station[self.index[name] + index]["Qj"] = 0 if (Qj == None ) else Qj
-        self.station[self.index[name] + index]["Qk"] = 0 if (Qk == None ) else Qk
+        self.station[self.index[name] + index]["Vj"] = Vj if (Qj == -1 or Qj== "init") else 0
+        self.station[self.index[name] + index]["Vk"] = Vk if (Qk == -1 or Qk== "init") else 0
+        self.station[self.index[name] + index]["Qj"] = -1 if (Qj == None ) else Qj
+        self.station[self.index[name] + index]["Qk"] = -1 if (Qk == None ) else Qk
         self.station[self.index[name] + index]["dest"] = dest
         self.station[self.index[name] + index]["A"] = A
         self.station[self.index[name] + index]["status"] = "issued"
@@ -178,7 +178,7 @@ class RS:
             return self.used[name] < self.station_num[name]
 
     def ready(self, index):
-        return ((self.station[index]["Qj"] == 0) and (self.station[index]["Qj"] == 0) and (self.station[index]["status"] == "issued"))
+        return ((self.station[index]["Qj"] == -1) and (self.station[index]["Qj"] == -1) and (self.station[index]["status"] == "issued"))
 
     def station_num_total(self):
         return self.index["mult"] + self.station_num["mult"]
@@ -191,11 +191,11 @@ class RS:
         ## of load and store word. The function is to deal with memorey and add data to it and get data from it.
 
         if(op == "add" or op == "sub" or op == "addi"):
-            self.station[index]["funct_unit"].operation(self.station[index]["Vj"], self.station[index]["Vj"], self.station[index]["op"])
+            self.station[index]["funct_unit"].operation(self.station[index]["Vj"], self.station[index]["Vk"], self.station[index]["op"])
         elif(op == "jalr" or op == "ret" or op == "jmp"):
-            self.station[index]["funct_unit"].operation(self.station[index]["Vj"], self.station[index]["Vj"], self.station[index]["op"], pc)
+            self.station[index]["funct_unit"].operation(self.station[index]["Vj"], self.station[index]["Vk"], self.station[index]["op"], pc)
         elif(op == "nand"):
-            self.station[index]["funct_unit"].NAND(self.station[index]["Vj"], self.station[index]["Vj"], self.station[index]["op"])
+            self.station[index]["funct_unit"].Nand(self.station[index]["Vj"], self.station[index]["Vk"])
 
         #return self.station[index]["op"], self.station[index]["Qj"], self.station[index]["Qk"], self.station[index]["A"], index
 
@@ -214,8 +214,8 @@ class RS:
         return self.station[index]["status"] 
 
     def decFuncUnitCount(self, index):
-        self.station[index]["fun_unit"].count()
-        result = self.station[index]["fun_unit"].ready()
+        self.station[index]["funct_unit"].count()
+        result = self.station[index]["funct_unit"].ready()
         if(result != None):
             self.station[index]["status"] = "done"
             return result
@@ -224,5 +224,15 @@ class RS:
 
     def getTargetRob(self, index):
         return self.station[index]["dest"]
+    
+    def updRS(self, robIndex, result):
+        for i in self.station:
+            if(i['Qj']==robIndex):
+                i['Qj']=-1
+                i['Vj']=result
+            if(i['Qk']==robIndex):
+                i['Qk']=-1
+                i['Vk']=result
+        
 
 

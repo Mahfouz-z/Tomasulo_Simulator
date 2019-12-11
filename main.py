@@ -18,7 +18,8 @@ from SW import *
 #dataMem0 = dataMem(dataMemInitFilePath)
 #instQueue0 = insrtuctionUnit(assmFilePath)
 
-instQueue0 = insrtuctionUnit("inst.txt")
+instQueue0 = insrtuctionUnit("test.txt")
+lastPC=instQueue0.lastPC()
 config={}
 config["lw"]=2
 config["sw"]=2
@@ -31,14 +32,6 @@ config["mult"]=2
 
 ROB0 = ROB()
 RS0 = RS(config) 
-
-mul0=Multipliers(2)
-add0 = Adders(2)
-nand0= NAND(1)
-lw0 = LW(3)
-sw0=SW(3)
-jmp0= JMP(1)
-beq0=BEQ(1)
 
 
 # reg_file
@@ -56,17 +49,22 @@ stationsNumber = RS0.station_num_total()
 
 #### We better add the immediate calculation of the load and store to the reservation station class and make it part of the RS to be ready 
 
-while (clk<3):
+while (clk<12):
 
     #simulating execute stage
+
+    
 
     for i in range(stationsNumber):
         if(RS0.get_status(i) == "executing"):
             result = RS0.decFuncUnitCount(i)
         if(RS0.get_status(i) == "done"):
-            cdbData = {}
-            cdbData["result"] = result
-            cdbData["targetRob"] = RS0.getTargetRob(i) 
+            #cdbData = {}
+            #cdbData["result"] = result
+            #cdbData["targetRob"] = RS0.getTargetRob(i) 
+            robIndex=RS0.getTargetRob(i) 
+            ROB0.upd_entry(robIndex,result)
+            RS0.updRS(robIndex,result)
             RS0.write(i)
         if(RS0.ready(i)):
             RS0.execute(i, pc)
@@ -74,23 +72,25 @@ while (clk<3):
     
     #simulating issue stage
     for i in range(numberOfIssues):
-        issue = instQueue0.getIssue(1, pc)
-        instType = issue[0].instType
-        if(RS0.available(instType)):
-            if(ROB0.check_available() >= 1):
-                dest=ROB0.initiate_entry(issue[0])
-                RS0.issue(instType, reg[issue[0].r2].data, reg[issue[0].r3].data, reg[issue[0].r2].ROBNumber, reg[issue[0].r3].ROBNumber, dest, int(issue[0].imm))
-                if(instType == 'beq'):
-                    if(int(issue[0].imm)<0):
-                        pc=pc+int(issue[0].imm)
-                    else:
+        if(pc<=lastPC):
+            issue = instQueue0.getIssue(1, pc)
+            instType = issue[0].instType
+            if(RS0.available(instType)):
+                if(ROB0.check_available() >= 1):
+                    dest=ROB0.initiate_entry(issue[0])
+                    RS0.issue(instType, reg[issue[0].r2].data, reg[issue[0].r3].data, reg[issue[0].r2].ROBNumber, reg[issue[0].r3].ROBNumber, dest, int(issue[0].imm))
+                    reg[issue[0].r1].ROBNumber=dest
+                    if(instType == 'beq'):
+                        if(int(issue[0].imm)<0):
+                            pc=pc+int(issue[0].imm)
+                        else:
+                            pc+=1
+                    else:    
                         pc+=1
-                else:    
-                    pc+=1
+                else:
+                    break     
             else:
-                break     
-        else:
-            break
+                break
     
     
     clk+=1         

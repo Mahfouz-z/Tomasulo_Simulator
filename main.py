@@ -1,6 +1,6 @@
 from DataMemClass import dataMem
 from robClass import ROB
-from instructionUnit  import insrtuctionUnit
+from instructionUnit  import *
 from RegFile import RegFile
 from RS_Class import RS
 from Multipliers import *
@@ -31,12 +31,9 @@ config["mult"]=2
 
 ROB0 = ROB()
 RS0 = RS(config) 
-adder=[]
-mul=[]
-for i in range(config["mult"]):
-    mul.append(Multipliers(10))
-for i in range(config["add"]):
-    adder.append(Adders(2))
+
+mul0=Multipliers(2)
+add0 = Adders(2)
 nand0= NAND(1)
 lw0 = LW(3)
 sw0=SW(3)
@@ -54,32 +51,32 @@ clk = 0
 pc = 0
 
 numberOfIssues = 2
-stationNumber = RS0.station_num_total()
+stationsNumber = RS0.station_num_total()
 
 
 
 while (clk<6):
 
     #simulating execute stage
-    if(clk>0):
-        for i in range(stationNumber):
-            if(RS0.ready(i)):
-                RS0.execute(i)
-                oper=RS0.station[i]["op"]
-                if(oper == 'add' or oper =='sub'or oper=='addi'):
-                    adder[0].operation(RS0.station[i]["Vj"],RS0.station[i]["Vk"], RS0.station[i]["op"], i)
-                if(oper == 'mult'):
-                    mul0.mul(RS0.station[i]["Vj"],RS0.station[i]["Vk"], i)
-                if(oper =='nand'):
-                    nand0.Nand(RS0.station[i]["Vj"],RS0.station[i]["Vk"], i)
-                if(oper == 'lw'):
-                    lw0.getAddress(RS0.station[i]["Vj"],RS0.station[i]["Vk"], i)
-                if(oper == 'sw'):
-                    sw0.getAddress(RS0.station[i]["Vj"],RS0.station[i]["Vk"], i)
-                if(oper == 'jmp' or oper =='jalr'or oper =='ret'):
-                    jmp0.operation(RS0.station[i]["Vj"],RS0.station[i]["Vk"], RS0.station[i]["op"], pc, i)
-                if(oper == 'beq'):
-                    beq0.branch(RS0.station[i]["Vj"],RS0.station[i]["Vk"], pc, RS0.station[i]["A"], i)
+
+    for i in range(stationsNumber):
+        if(RS0.ready(i)):
+            RS0.execute(i)
+            oper=RS0.station[i]["op"]
+            if(oper == 'add' or oper =='sub'or oper=='addi'):
+                add0.operation(RS0.station[i]["Vj"],RS0.station[i]["Vk"], RS0.station[i]["op"], i)
+            if(oper == 'mult'):
+                mul0.mul(RS0.station[i]["Vj"],RS0.station[i]["Vk"], i)
+            if(oper =='nand'):
+                nand0.Nand(RS0.station[i]["Vj"],RS0.station[i]["Vk"], i)
+            if(oper == 'lw'):
+                lw0.getAddress(RS0.station[i]["Vj"],RS0.station[i]["Vk"], RS0.station[i]["op"], i)
+            if(oper == 'sw'):
+                sw0.getAddress(RS0.station[i]["Vj"],RS0.station[i]["Vk"], RS0.station[i]["op"], i)
+            if(oper == 'jmp' or oper =='jalr'or oper =='ret'):
+                jmp0.operation(RS0.station[i]["Vj"],RS0.station[i]["Vk"], RS0.station[i]["op"], pc, i)
+            if(oper == 'beq'):
+                beq0.branch(RS0.station[i]["Vj"],RS0.station[i]["Vk"], pc, RS0.station[i]["A"], i)
                 
             
             
@@ -92,7 +89,7 @@ while (clk<6):
         if(RS0.available(instType)):
             if(ROB0.check_available() >= 1):
                 dest=ROB0.initiate_entry(issue[0])
-                RS0.issue(instType, reg[issue[0].r2].data, reg[issue[0].r3].data, reg[issue[0].r2].ROBNumber, reg[issue[0].r3].ROBNumber, dest, reg[issue[0].r3].data+int(issue[0].imm)  )
+                RS0.issue(instType, reg[issue[0].r2].data, reg[issue[0].r3].data, reg[issue[0].r2].ROBNumber, reg[issue[0].r3].ROBNumber, dest, reg[issue[0].r3].data+int(issue[0].imm))
                 if(instType == 'beq'):
                     if(int(issue[0].imm)<0):
                         pc=pc+int(issue[0].imm)

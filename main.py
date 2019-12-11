@@ -55,7 +55,7 @@ stationsNumber = RS0.station_num_total()
 
 
 
-while (clk<6):
+while (clk<3):
 
     #simulating execute stage
 
@@ -70,9 +70,9 @@ while (clk<6):
             if(oper =='nand'):
                 nand0.Nand(RS0.station[i]["Vj"],RS0.station[i]["Vk"], i)
             if(oper == 'lw'):
-                lw0.getAddress(RS0.station[i]["Vj"],RS0.station[i]["Vk"], RS0.station[i]["op"], i)
+                lw0.getAddress(RS0.station[i]["Vj"],RS0.station[i]["Vk"], i)
             if(oper == 'sw'):
-                sw0.getAddress(RS0.station[i]["Vj"],RS0.station[i]["Vk"], RS0.station[i]["op"], i)
+                sw0.getAddress(RS0.station[i]["Vj"],RS0.station[i]["Vk"], i)
             if(oper == 'jmp' or oper =='jalr'or oper =='ret'):
                 jmp0.operation(RS0.station[i]["Vj"],RS0.station[i]["Vk"], RS0.station[i]["op"], pc, i)
             if(oper == 'beq'):
@@ -89,7 +89,7 @@ while (clk<6):
         if(RS0.available(instType)):
             if(ROB0.check_available() >= 1):
                 dest=ROB0.initiate_entry(issue[0])
-                RS0.issue(instType, reg[issue[0].r2].data, reg[issue[0].r3].data, reg[issue[0].r2].ROBNumber, reg[issue[0].r3].ROBNumber, dest, reg[issue[0].r3].data+int(issue[0].imm))
+                RS0.issue(instType, reg[issue[0].r2].data, reg[issue[0].r3].data, reg[issue[0].r2].ROBNumber, reg[issue[0].r3].ROBNumber, dest, int(issue[0].imm))
                 if(instType == 'beq'):
                     if(int(issue[0].imm)<0):
                         pc=pc+int(issue[0].imm)

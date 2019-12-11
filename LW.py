@@ -4,7 +4,6 @@ class LW:
         self.operand1= 0
         self.offset= 0
         self.address= 0
-        self.destination = 0
         self.index= 0
         self.maxCounter = counter
         self.counter = counter
@@ -16,8 +15,7 @@ class LW:
         return self.address
 
     def load (self, destinationIn):
-        self.destination= destinationIn
-        self.result = self.destination
+        self.result = self.destinationIn
 
     def getIndex(self):
         return self.index

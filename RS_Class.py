@@ -178,7 +178,7 @@ class RS:
             return self.used[name] < self.station_num[name]
 
     def ready(self, index):
-        return ((self.station[index]["Qj"] == -1) and (self.station[index]["Qj"] == -1) and (self.station[index]["status"] == "issued"))
+        return ((self.station[index]["Qj"] == -1) and (self.station[index]["Qk"] == -1) and (self.station[index]["status"] == "issued"))
 
     def station_num_total(self):
         return self.index["mult"] + self.station_num["mult"]

@@ -212,7 +212,8 @@ class RS:
             self.station[index]["funct_unit"].Nand(self.station[index]["Vj"], self.station[index]["Vk"])
         elif(op == "beq"):
             self.station[index]["funct_unit"].branch(self.station[index]["Vj"], self.station[index]["Vk"], pc, self.station[index]["A"])
-
+        elif (op=="mult"):
+            self.station[index]["funct_unit"].mul(self.station[index]["Vj"], self.station[index]["Vk"])
         #return self.station[index]["op"], self.station[index]["Qj"], self.station[index]["Qk"], self.station[index]["A"], index
 
     def write(self, index):

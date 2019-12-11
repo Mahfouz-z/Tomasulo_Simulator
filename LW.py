@@ -32,4 +32,4 @@ class LW_FunctUnit:
     def __init__ (self, counter):
         self.maxCounter = counter
     
-    def accessMem(self, base_register, imm):
+#    def accessMem(self, base_register, imm):

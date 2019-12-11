@@ -8,7 +8,7 @@ class BEQ:
        self.pc= 0
        self.index = 0
        self.taken = False
-       self.result
+       self.result=0
 
 
 
@@ -18,7 +18,7 @@ class BEQ:
             self.pc= pc + offset
             self.taken = True 
         else:
-            self.pc= pc + 4
+            self.pc= pc + 1
             self.taken = False
         self.index = index
         self.result= self.pc

@@ -1,6 +1,5 @@
 class Multipliers:
-
-    def __init__(self, counter):
+    def __init__ (self, counter):
        self.result = 0
        self.operand1 = 0 
        self.operand2= 0
@@ -25,3 +24,4 @@ class Multipliers:
             return self.result
         else:
             return None
+

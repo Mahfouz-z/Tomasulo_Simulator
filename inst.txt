@@ -1,6 +1,11 @@
 add x1, x2, x3
-beq x6, 2 (x2)
-sub x5, x4, x6
-add x2, x3, x7
-nand x7, x2, x3
+label:
+beq x6, x2, label2
+jalr x3
 lw x5, 20 (x3)
+sub x5, x4, x6
+ret
+jmp label
+add x2, x3, x7
+label2:
+nand x7, x2, x3

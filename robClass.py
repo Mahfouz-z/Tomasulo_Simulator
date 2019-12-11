@@ -30,5 +30,15 @@ class ROB:
             self.buffer[self.tail]["Dest"] = inst.r1
             self.buffer[self.tail]["Value"] = "unkown"
             self.tail = (self.tail+1)%8
+            self.available-=1
             return (self.tail-1)
+        def remove_entry(self):
+            self.buffer[self.head]["Type"] = "init"
+            self.buffer[self.head]["Dest"] = "init"
+            self.buffer[self.head]["Value"] = "init"
+            self.head = (self.head+1)%8
+            self.available+=1
+            
+            
+            
        

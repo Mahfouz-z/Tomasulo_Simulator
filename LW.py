@@ -14,7 +14,7 @@ class LW:
         return self.address
 
     def load (self, destinationIn):
-        self.result = self.destinationIn
+        self.result = destinationIn
 
     def getIndex(self):
         return self.index

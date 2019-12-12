@@ -20,7 +20,7 @@ from NAND import NAND
 
 instQueue0 = insrtuctionUnit("test.txt")
 lastPC=instQueue0.lastPC()
-config={}
+config={} #TODO take it from a file
 config["lw"]=2
 config["sw"]=2
 config["jmp"]=2

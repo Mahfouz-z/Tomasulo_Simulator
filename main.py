@@ -12,6 +12,7 @@ from NAND import NAND
 #from LW import *
 #from SW import *
 
+
 #assmFilePath = input("Please enter assembly file path:")
 #dataMemInitFilePath = input("Please input data memorey init file path:")
 
@@ -29,7 +30,7 @@ for line in fuInfo:
     c+=1
 di={}
 for i in fuInfo:
-    di[i[0]]= i[1],i[2]
+    di[i[0]]= int(i[1]),int(i[2])
 ####################################################
 
 instQueue0 = insrtuctionUnit("inst.txt")

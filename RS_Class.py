@@ -211,7 +211,7 @@ class RS:
         elif(op == "nand"):
             self.station[index]["funct_unit"].Nand(self.station[index]["Vj"], self.station[index]["Vk"])
         elif(op == "beq"):
-            self.station[index]["funct_unit"].branch(self.station[index]["Vj"], self.station[index]["Vk"], pc, self.station[index]["A"])
+            self.station[index]["funct_unit"].branch(self.station[index]["Vj"], self.station[index]["Vk"], self.station[index]["A"], pc)
 
         #return self.station[index]["op"], self.station[index]["Qj"], self.station[index]["Qk"], self.station[index]["A"], index
 
@@ -229,11 +229,19 @@ class RS:
         
 
     def get_status(self, index):
-        return self.station[index]["status"] 
+        return self.station[index]["status"]
+
+    def get_type(self, index):
+        return self.station[index]["op"]
+
+    def get_missPridected(self):
+        return self.missPridected
 
     def decFuncUnitCount(self, index):
         self.station[index]["funct_unit"].count()
         result = self.station[index]["funct_unit"].ready()
+        if self.station[index]["op"] == "beq":
+            self.missPridected = self.station[index]["funct_unit"].missPridected()
         if(result != None):
             self.station[index]["status"] = "done"
             return result
@@ -251,6 +259,3 @@ class RS:
             if(i['Qk']==robIndex):
                 i['Qk']=-1
                 i['Vk']=result
-        
-
-

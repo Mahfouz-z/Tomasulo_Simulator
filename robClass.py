@@ -11,9 +11,10 @@ class ROB:
         def __init__(self):
             self.head = 0
             self.tail = 0
-            self.available = 8
+            self.size = 8
+            self.available = self.size
             self.buffer = []
-            for i in range(8):
+            for i in range(self.size):
                 buffer_entry = {}
                 buffer_entry["Type"] = "init"
                 buffer_entry["Dest"] = "init"
@@ -43,10 +44,18 @@ class ROB:
         def upd_entry(self, index, res):
             self.buffer[index]["Value"]=res
             self.buffer[index]["Ready"]=True
+
         def checkHead(self):
             if(self.buffer[self.head]["Ready"]):
                 return self.buffer[self.head]
             else: return None
-            
-            
-       
+
+        def flush(self):
+            for i in range (self.size):
+                self.buffer[i]["Type"] = "init"
+                self.buffer[i]["Dest"] = "init"
+                self.buffer[i]["Value"] = "init"
+                self.buffer[i]["Ready"] = False
+                self.head = 0
+                self.tail = 0
+                self.available = self.size

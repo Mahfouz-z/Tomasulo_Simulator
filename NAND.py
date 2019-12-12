@@ -9,7 +9,7 @@ class NAND:
 
     def Nand(self, operand1, operand2):
         self.counter = self.maxCounter
-        self.result = not (operand1 and operand2)
+        self.result = ~ (operand1 & operand2)
         
 
     def count(self):

@@ -33,7 +33,7 @@ for i in fuInfo:
     di[i[0]]= int(i[1]),int(i[2])
 ####################################################
 
-instQueue0 = insrtuctionUnit("inst.txt")
+instQueue0 = insrtuctionUnit("test.txt")
 lastPC=instQueue0.lastPC()
 config={} #TODO take it from a file
 config = di 
@@ -59,14 +59,18 @@ wordAdd = 0
 numberOfIssues = 2
 stationsNumber = RS0.station_num_total()
 
-
+com=0
 #### We better add the immediate calculation of the load and store to the reservation station class and make it part of the RS to be ready 
 
-while (clk<50):
-    #simulation commit stage
+while (clk<100):
+    #simulation commit 
+    
     for i in range (numberOfIssues):
         commit=ROB0.checkHead()
-        if(commit!=None):
+        if(commit == "ebreak"):
+            ebreak = True
+        elif(commit!=None):
+            com+=1
             robType=commit["Type"]
             if(robType=="add" or robType=="addi" or robType== "sub" or robType=="nand" or robType=="mult"):
                 rd=commit["Dest"]
@@ -77,16 +81,23 @@ while (clk<50):
                 else: reg[rd].ROBNumber= -1
                 ROB0.remove_entry()
             elif(robType=="beq"):
+                beqNum += 1
                 if missPredicted:
                     pc = nextPC[0]
                     nextPC = []
                     ROB0.flush()
+                    RS0.flush()
+                    for r in range(8):
+                       reg["x"+ str(r)].flush()
                     missPredicted = False
                 ROB0.remove_entry()
             elif(robType == "jmp" or robType == "jalr" or robType == "ret"):
                 pc = nextPCJ[0]
                 nextPCJ = []
                 ROB0.flush()
+                RS0.flush()
+                for r in range(8):
+                    reg["x"+ str(r)].flush()
             elif robType == "lw": 
                 rd=commit["Dest"]
                 reg[rd].data=commit["Value"]
@@ -95,8 +106,8 @@ while (clk<50):
             elif robType == "sw":
                 dataMem0.update(wordAdd, commit["Value"])
                 ROB0.remove_entry()
-            elif robType == "ebreak":
-                ebreak = True
+            #elif robType == "ebreak":
+                
     
     if ebreak:
         break
@@ -110,18 +121,22 @@ while (clk<50):
             instType = RS0.get_type(i)
             if (instType == "jmp" or instType == "jalr" or instType == "ret"): #TODO jalr doesn't write to a register
                 nextPCJ.append(result)
-            if instType == "beq":
+                ROB0.upd_entry(robIndex,result)
+            elif instType == "beq":
                 beqNum += 1
                 if RS0.get_missPridected():
                     nextPC.append(result)
                     beqMissPredicted += 1
                     missPredicted = True
-            if instType == "lw":
+                ROB0.upd_entry(robIndex,result)
+            elif instType == "lw":
                 wordAdd = result
                 ROB0.upd_entry(robIndex,dataMem0.getData(wordAdd))
-            if instType == "sw":
+            elif instType == "sw":
                 wordADD = result
                 ROB0.upd_entry(robIndex,RS0.get_Vj(i))
+            elif instType == "ebreak":
+                pass
             else:
                 ROB0.upd_entry(robIndex,result)
 
@@ -130,12 +145,12 @@ while (clk<50):
         if(RS0.ready(i)):
             RS0.execute(i, pc)
 
-    result = RS0.decFuncUnitCount(RS0.station_num_total())
-    if(result == "ebreak"):
-        robIndex = RS0.getTargetRob(RS0.station_num_total())
-        instType = RS0.get_type(RS0.station_num_total())
-        ROB0.upd_entry(robIndex,result)
-    RS0.execute(RS0.station_num_total(), pc)
+    #resultE = RS0.decFuncUnitCount(RS0.station_num_total())
+    #if(resultE == "ebreak"):
+    #    robIndex = RS0.getTargetRob(RS0.station_num_total())
+    #    instType = RS0.get_type(RS0.station_num_total())
+    #    ROB0.upd_entry(robIndex,resultE)
+    #RS0.execute(RS0.station_num_total(), pc)
     
     #simulating issue stage
     for i in range(numberOfIssues):
@@ -160,3 +175,8 @@ while (clk<50):
                 break
     
     clk+=1
+
+
+print("The time of excution is:" + str(clk) + "cycles")
+print("The IPC is:" + str(com / clk))
+print ("the ratio of branch mispredictions is:" + str(beqMissPredicted/beqNum))

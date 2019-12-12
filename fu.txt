@@ -9,3 +9,4 @@ sub 3 2
 addi 3 2 
 nand 2 1 
 mult 2 10
+ebreak 1 1

@@ -39,6 +39,6 @@ class JMP:
 
     def ready(self):   
         if(self.counter == 0):
-            return self.result
+            return self.address
         else:
             return None

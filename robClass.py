@@ -48,6 +48,8 @@ class ROB:
         def checkHead(self):
             if(self.buffer[self.head]["Ready"]):
                 return self.buffer[self.head]
+            elif(self.buffer[self.head]["Type"] == "ebreak"):
+                return "ebreak"
             else: return None
 
         def flush(self):

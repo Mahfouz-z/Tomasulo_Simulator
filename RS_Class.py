@@ -11,7 +11,7 @@ class RS:
     def __init__(self, station_num):
         self.ebreak = False
         self.station_num = station_num
-        self.station_num["ebreak"][0] = 1
+        #self.station_num["ebreak"][0] = 1
         self.index = {}
         self.index["lw"] = 0
         self.index["sw"] = self.index["lw"] + self.station_num["lw"][0]
@@ -287,15 +287,16 @@ class RS:
     def decFuncUnitCount(self, index):
         if(index == self.index["ebreak"] and self.ebreak):
             return "ebreak"
-        self.station[index]["funct_unit"].count()
-        result = self.station[index]["funct_unit"].ready()
-        if self.station[index]["op"] == "beq":
-            self.missPridected = self.station[index]["funct_unit"].missPridected()
-        if(result != None):
-            self.station[index]["status"] = "done"
-            return result
-        else:
-            return None
+        if(index != self.index["ebreak"]):
+            self.station[index]["funct_unit"].count()
+            result = self.station[index]["funct_unit"].ready()
+            if self.station[index]["op"] == "beq":
+                self.missPridected = self.station[index]["funct_unit"].missPridected()
+            if(result != None):
+                self.station[index]["status"] = "done"
+                return result
+            else:
+                return None
 
     def getTargetRob(self, index):
         return self.station[index]["dest"]
@@ -310,7 +311,7 @@ class RS:
                 i['Vk']=result
 
     def flush(self):
-        for i in range(self.station_num_total):
+        for i in range(self.index["mult"] + self.station_num["mult"][0]):
             self.station[i]["busy"] = False
             self.station[i]["op"] = "init"
             self.station[i]["Vj"] = 0
@@ -320,3 +321,19 @@ class RS:
             self.station[i]["dest"] = 0
             self.station[i]["A"] = 0
             self.station[i]["status"] = "init"
+            self.used["lw"] = 0
+            self.used["sw"] = 0
+            self.used["jmp"] = 0
+            self.used["beq"] = 0
+            self.used["add"] = 0
+            self.used["nand"] = 0
+            self.used["mult"] = 0
+            self.used["ebreak"] = 0
+            self.cycle["lw"] = 0
+            self.cycle["sw"] = 0
+            self.cycle["jmp"] = 0
+            self.cycle["beq"] = 0
+            self.cycle["add"] = 0
+            self.cycle["nand"] = 0
+            self.cycle["mult"] = 0
+            self.cycle["ebreak"] = 0

@@ -32,7 +32,7 @@ for i in fuInfo:
     di[i[0]]= i[1],i[2]
 ####################################################
 
-instQueue0 = insrtuctionUnit("test.txt")
+instQueue0 = insrtuctionUnit("inst.txt")
 lastPC=instQueue0.lastPC()
 config={} #TODO take it from a file
 config = di 

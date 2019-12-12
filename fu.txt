@@ -1,0 +1,11 @@
+lw 2 2 
+sw 2 2 
+jmp 2 1
+jalr 2 1 
+ret 2 1 
+beq 2 1 
+add 3 2 
+sub 3 2 
+addi 3 2 
+nand 2 1 
+mult 2 10

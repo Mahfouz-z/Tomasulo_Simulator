@@ -171,8 +171,8 @@ class RS:
         self.station[self.index[temp] + index]["op"] = name
         self.station[self.index[temp] + index]["Vj"] = Vj if (Qj == -1 or Qj== "init") else 0
         self.station[self.index[temp] + index]["Vk"] = Vk if (Qk == -1 or Qk== "init") else 0
-        self.station[self.index[temp] + index]["Qj"] = -1 if (Qj == None ) else Qj
-        self.station[self.index[temp] + index]["Qk"] = -1 if (Qk == None ) else Qk
+        self.station[self.index[temp] + index]["Qj"] = -1 if (Qj == -1 ) else Qj
+        self.station[self.index[temp] + index]["Qk"] = -1 if (Qk == -1 ) else Qk
         self.station[self.index[temp] + index]["dest"] = dest
         self.station[self.index[temp] + index]["A"] = A
         self.station[self.index[temp] + index]["status"] = "issued"

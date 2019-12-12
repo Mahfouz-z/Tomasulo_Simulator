@@ -15,7 +15,7 @@ from NAND import NAND
 #assmFilePath = input("Please enter assembly file path:")
 #dataMemInitFilePath = input("Please input data memorey init file path:")
 
-#dataMem0 = dataMem("")#dataMemInitFilePath)
+dataMem0 = dataMem("dataMem.txt")#dataMemInitFilePath)
 #instQueue0 = insrtuctionUnit(assmFilePath)
 
 ############# Read the Configration file ############

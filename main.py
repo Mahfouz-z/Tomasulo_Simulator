@@ -3,14 +3,14 @@ from robClass import ROB
 from instructionUnit  import *
 from RegFile import RegFile
 from RS_Class import RS
-from Multipliers import *
 from NAND import NAND
-from Multipliers import *
-from Adders import *
-from BEQ import *
-from JMP import *
-from LW import *
-from SW import *
+#from Multipliers import *
+#from Multipliers import *
+#from Adders import *
+#from BEQ import *
+#from JMP import *
+#from LW import *
+#from SW import *
 
 #assmFilePath = input("Please enter assembly file path:")
 #dataMemInitFilePath = input("Please input data memorey init file path:")
@@ -32,7 +32,9 @@ config["mult"]=2
 
 ROB0 = ROB()
 RS0 = RS(config) 
-
+beqNum = 0
+beqMissPredicted = 0
+missPredicted = False
 
 # reg_file
 reg={}
@@ -42,6 +44,8 @@ for i in range(8):
 
 clk = 0
 pc = 0
+nextPC = []
+nextPCJ = []
 
 numberOfIssues = 2
 stationsNumber = RS0.station_num_total()
@@ -61,8 +65,17 @@ while (clk<12):
                 reg[rd].data=commit["Value"]
                 reg[rd].ROBNumber=-1
                 ROB0.remove_entry()
-            elif(robType=='beq'):
+            elif(robType=="beq"):
+                if missPredicted:
+                    pc = nextPC[0]
+                    nextPC = []
+                    ROB0.flush()
+                    missPredicted = False
                 ROB0.remove_entry()
+            elif(robType == "jmp" or robType == "jalr" or robType == "ret"):
+                pc = nextPCJ[0]
+                nextPCJ = []
+                ROB0.flush()
             
     
     #simulating execute and writing stage
@@ -70,7 +83,16 @@ while (clk<12):
         if(RS0.get_status(i) == "executing"):
             result = RS0.decFuncUnitCount(i)
         if(RS0.get_status(i) == "done"):
-            robIndex=RS0.getTargetRob(i) 
+            robIndex = RS0.getTargetRob(i)
+            instType = RS0.get_type(i)
+            if (instType == "jmp" or instType == "jalr" or instType == "ret"):
+                nextPCJ.append(result)
+            if instType == "beq":
+                beqNum += 1
+                if RS0.get_missPridected():
+                    nextPC.append(result)
+                    beqMissPredicted += 1
+                    missPredicted = True
             ROB0.upd_entry(robIndex,result)
             RS0.updRS(robIndex,result)
             RS0.write(i)

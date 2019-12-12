@@ -12,8 +12,9 @@ class BEQ:
 
 
 
-    def branch (self, operand1, operand2,  pc, offset):
+    def branch (self, operand1, operand2, offset,  pc):
         self.counter= self.maxCounter
+        self.offset = offset
         if operand1 == operand2: 
             self.pc= offset
             self.taken = True 
@@ -26,8 +27,8 @@ class BEQ:
         self.counter-=1
         
    
-    def getTaken(self):
-        return self.taken
+    def missPridected(self):
+        return (self.taken and self.offset > 0) or ((not self.taken) and self.offset < 0)
 
     def ready(self):   
         if(self.counter == 0):

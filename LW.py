@@ -1,23 +1,17 @@
 class LW: 
     def __init__ (self, counter):
-        self.state = True
         self.operand1= 0
         self.offset= 0
         self.address= 0
-        self.index= 0
-        self.maxCounter = counter
-        self.counter = counter
+        self.maxCounter = counter+1
+        self.counter = counter+1
         self.result = 0
 
     def getAddress (self, operand1, offset):
+        self.counter = self.maxCounter
         self.address = operand1 + offset
-        return self.address
+        self.result = self.address
 
-    def load (self, destinationIn):
-        self.result = self.destinationIn
-
-    def getIndex(self):
-        return self.index
         
     def count(self):
         self.counter -= 1
@@ -27,9 +21,3 @@ class LW:
             return self.result
         else:
             return None
-        
-class LW_FunctUnit:
-    def __init__ (self, counter):
-        self.maxCounter = counter
-    
-#    def accessMem(self, base_register, imm):

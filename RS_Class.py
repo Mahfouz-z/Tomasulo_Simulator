@@ -9,13 +9,13 @@ from SW import *
 
 class RS:
     def __init__(self, station_num):
-        self.station_num = station_num #TODO take it from a file
+        self.station_num = station_num
         self.index = {}
         self.index["lw"] = 0
         self.index["sw"] = self.index["lw"] + self.station_num["lw"]
         self.index["jmp"] = self.index["sw"] + self.station_num["sw"]
-        self.index["jalr"] = self.index["sw"] + self.station_num["sw"]
-        self.index["ret"] = self.index["sw"] + self.station_num["sw"]
+        #self.index["jalr"] = self.index["sw"] + self.station_num["sw"]
+        #self.index["ret"] = self.index["sw"] + self.station_num["sw"]
         self.index["beq"] = self.index["jmp"] + self.station_num["jmp"]
         self.index["add"] = self.index["beq"] + self.station_num["beq"]
         #self.index["sub"] = self.index["beq"] + self.station_num["beq"]
@@ -50,8 +50,8 @@ class RS:
             station_entry["op"] = "init"
             station_entry["Vj"] = 0
             station_entry["Vk"] = 0
-            station_entry["Qj"] = "init"
-            station_entry["Qk"] = "init"
+            station_entry["Qj"] = -1
+            station_entry["Qk"] = -1
             station_entry["dest"] = 0
             station_entry["A"] = 0
             station_entry["status"] = "init"
@@ -65,8 +65,8 @@ class RS:
             station_entry["op"] = "init"
             station_entry["Vj"] = 0
             station_entry["Vk"] = 0
-            station_entry["Qj"] = "init"
-            station_entry["Qk"] = "init"
+            station_entry["Qj"] = -1
+            station_entry["Qk"] = -1
             station_entry["dest"] = 0
             station_entry["A"] = 0
             station_entry["status"] = "init"
@@ -80,8 +80,8 @@ class RS:
             station_entry["op"] = "init"
             station_entry["Vj"] = 0
             station_entry["Vk"] = 0
-            station_entry["Qj"] = "init"
-            station_entry["Qk"] = "init"
+            station_entry["Qj"] = -1
+            station_entry["Qk"] = -1
             station_entry["dest"] = 0
             station_entry["A"] = 0
             station_entry["status"] = "init"
@@ -95,12 +95,12 @@ class RS:
             station_entry["op"] = "init"
             station_entry["Vj"] = 0
             station_entry["Vk"] = 0
-            station_entry["Qj"] = "init"
-            station_entry["Qk"] = "init"
+            station_entry["Qj"] = -1
+            station_entry["Qk"] = -1
             station_entry["dest"] = 0
             station_entry["A"] = 0
             station_entry["status"] = "init"
-            station_entry["funct_unit"] = BEQ(1)
+            station_entry["funct_unit"] = BEQ(1) #TODO change the 1 to be variable 
             self.station.append(station_entry)
 
         for i in range(self.station_num["add"]):
@@ -110,8 +110,8 @@ class RS:
             station_entry["op"] = "init"
             station_entry["Vj"] = 0
             station_entry["Vk"] = 0
-            station_entry["Qj"] = "init"
-            station_entry["Qk"] = "init"
+            station_entry["Qj"] = -1
+            station_entry["Qk"] = -1
             station_entry["dest"] = 0
             station_entry["A"] = 0
             station_entry["status"] = "init"
@@ -125,8 +125,8 @@ class RS:
             station_entry["op"] = "init"
             station_entry["Vj"] = 0
             station_entry["Vk"] = 0
-            station_entry["Qj"] = "init"
-            station_entry["Qk"] = "init"
+            station_entry["Qj"] = -1
+            station_entry["Qk"] = -1
             station_entry["dest"] = 0
             station_entry["A"] = 0
             station_entry["status"] = "init"
@@ -140,8 +140,8 @@ class RS:
             station_entry["op"] = "init"
             station_entry["Vj"] = 0
             station_entry["Vk"] = 0
-            station_entry["Qj"] = "init"
-            station_entry["Qk"] = "init"
+            station_entry["Qj"] = -1
+            station_entry["Qk"] = -1
             station_entry["dest"] = 0
             station_entry["A"] = 0
             station_entry["status"] = "init"
@@ -218,8 +218,12 @@ class RS:
             self.station[index]["funct_unit"].Nand(self.station[index]["Vj"], self.station[index]["Vk"])
         elif(op == "beq"):
             self.station[index]["funct_unit"].branch(self.station[index]["Vj"], self.station[index]["Vk"], self.station[index]["A"], pc)
-        elif (op=="mult"):
+        elif(op=="mult"):
             self.station[index]["funct_unit"].mul(self.station[index]["Vj"], self.station[index]["Vk"])
+        elif(op == "lw"):
+            self.station[index]["funct_unit"].getAddress(self.station[index]["Vj"], self.station[index]["A"])
+        elif(op == "sw"):
+            self.station[index]["funct_unit"].getAddress(self.station[index]["Vj"], self.station[index]["A"])
         #return self.station[index]["op"], self.station[index]["Qj"], self.station[index]["Qk"], self.station[index]["A"], index
 
     def write(self, index):
@@ -233,8 +237,8 @@ class RS:
         self.station[index]["op"] = "init"
         self.station[index]["Vj"] = 0
         self.station[index]["Vk"] = 0
-        self.station[index]["Qj"] = "init"
-        self.station[index]["Qk"] = "init"
+        self.station[index]["Qj"] = -1
+        self.station[index]["Qk"] = -1
         self.station[index]["dest"] = 0
         self.station[index]["A"] = 0
         self.station[index]["status"] = "init"
@@ -245,6 +249,9 @@ class RS:
 
     def get_type(self, index):
         return self.station[index]["op"]
+
+    def get_Vj(self, index):
+        return self.station[index]["Vj"]
 
     def get_missPridected(self):
         return self.missPridected
@@ -271,3 +278,15 @@ class RS:
             if(i['Qk']==robIndex):
                 i['Qk']=-1
                 i['Vk']=result
+
+    def flush(self):
+        for i in range(self.station_num_total):
+            self.station[i]["busy"] = False
+            self.station[i]["op"] = "init"
+            self.station[i]["Vj"] = 0
+            self.station[i]["Vk"] = 0
+            self.station[i]["Qj"] = -1
+            self.station[i]["Qk"] = -1
+            self.station[i]["dest"] = 0
+            self.station[i]["A"] = 0
+            self.station[i]["status"] = "init"

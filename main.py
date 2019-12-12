@@ -13,9 +13,9 @@ from NAND import NAND
 #from SW import *
 
 #assmFilePath = input("Please enter assembly file path:")
-dataMemInitFilePath = input("Please input data memorey init file path:")
+#dataMemInitFilePath = input("Please input data memorey init file path:")
 
-dataMem0 = dataMem(dataMemInitFilePath)
+#dataMem0 = dataMem(dataMemInitFilePath)
 #instQueue0 = insrtuctionUnit(assmFilePath)
 
 instQueue0 = insrtuctionUnit("test.txt")
@@ -53,8 +53,8 @@ stationsNumber = RS0.station_num_total()
 
 #### We better add the immediate calculation of the load and store to the reservation station class and make it part of the RS to be ready 
 
-while (clk<40):
-  
+while (clk<50):
+    print(reg['x3'].data)
     #simulation commit stage
     for i in range (numberOfIssues):
         commit=ROB0.checkHead()
@@ -66,7 +66,7 @@ while (clk<40):
                 if(robType=="add" or robType=="addi" or robType== "sub"):
                     if(reg[rd].ROBNumber==ROB0.head):
                         reg[rd].ROBNumber= -1
-                   # else: reg[rd].ROBNumber= -1
+                else: reg[rd].ROBNumber= -1
                 ROB0.remove_entry()
             elif(robType=="beq"):
                 if missPredicted:

@@ -53,28 +53,29 @@ stationsNumber = RS0.station_num_total()
 
 #### We better add the immediate calculation of the load and store to the reservation station class and make it part of the RS to be ready 
 
-while (clk<12):
+while (clk<9):
 
     #simulation commit stage
-    commit=ROB0.checkHead()
-    if(commit!=None):
-        robType=commit["Type"]
-        if(robType=="add" or robType=="addi" or robType== "sub" or robType=="nand" or robType=="mult"):
-            rd=commit["Dest"]
-            reg[rd].data=commit["Value"]
-            reg[rd].ROBNumber=-1
-            ROB0.remove_entry()
-        elif(robType=="beq"):
-            if missPredicted:
-                pc = nextPC[0]
-                nextPC = []
+    for i in range (numberOfIssues):
+        commit=ROB0.checkHead()
+        if(commit!=None):
+            robType=commit["Type"]
+            if(robType=="add" or robType=="addi" or robType== "sub" or robType=="nand" or robType=="mult"):
+                rd=commit["Dest"]
+                reg[rd].data=commit["Value"]
+                reg[rd].ROBNumber=-1
+                ROB0.remove_entry()
+            elif(robType=="beq"):
+                if missPredicted:
+                    pc = nextPC[0]
+                    nextPC = []
+                    ROB0.flush()
+                    missPredicted = False
+                ROB0.remove_entry()
+            elif(robType == "jmp" or robType == "jalr" or robType == "ret"):
+                pc = nextPCJ[0]
+                nextPCJ = []
                 ROB0.flush()
-                missPredicted = False
-            ROB0.remove_entry()
-        elif(robType == "jmp" or robType == "jalr" or robType == "ret"):
-            pc = nextPCJ[0]
-            nextPCJ = []
-            ROB0.flush()
             
     
     #simulating execute and writing stage
@@ -82,9 +83,6 @@ while (clk<12):
         if(RS0.get_status(i) == "executing"):
             result = RS0.decFuncUnitCount(i)
         if(RS0.get_status(i) == "done"):
-            #cdbData = {}
-            #cdbData["result"] = result
-            #cdbData["targetRob"] = RS0.getTargetRob(i) 
             robIndex = RS0.getTargetRob(i)
             instType = RS0.get_type(i)
             if (instType == "jmp" or instType == "jalr" or instType == "ret"):
@@ -110,8 +108,8 @@ while (clk<12):
             if(RS0.available(instType)):
                 if(ROB0.check_available() >= 1):
                     dest=ROB0.initiate_entry(issue[0])
-                    RS0.issue(instType, reg[issue[0].r2].data, reg[issue[0].r3].data, reg[issue[0].r2].ROBNumber, reg[issue[0].r3].ROBNumber, dest, int(issue[0].imm))
                     reg[issue[0].r1].ROBNumber=dest
+                    RS0.issue(instType, reg[issue[0].r2].data, reg[issue[0].r3].data, reg[issue[0].r2].ROBNumber, reg[issue[0].r3].ROBNumber, dest, int(issue[0].imm))
                     if(instType == 'beq'):
                         if(int(issue[0].imm)<=pc):
                             pc=int(issue[0].imm)

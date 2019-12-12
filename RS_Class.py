@@ -18,8 +18,8 @@ class RS:
         self.index["ret"] = self.index["sw"] + self.station_num["sw"]
         self.index["beq"] = self.index["jmp"] + self.station_num["jmp"]
         self.index["add"] = self.index["beq"] + self.station_num["beq"]
-        self.index["sub"] = self.index["beq"] + self.station_num["beq"]
-        self.index["addi"] = self.index["beq"] + self.station_num["beq"]
+        #self.index["sub"] = self.index["beq"] + self.station_num["beq"]
+        #self.index["addi"] = self.index["beq"] + self.station_num["beq"]
         self.index["nand"] = self.index["add"] + self.station_num["add"]
         self.index["mult"] = self.index["nand"] + self.station_num["nand"]
 
@@ -160,16 +160,22 @@ class RS:
         self.station[self.index[name] + index]["status"] = status
 
     def issue(self, name, Vj, Vk, Qj, Qk, dest, A):
+        temp=str()
         index = self.cycle["add"] % self.station_num["add"] if (name == "add" or name == "sub" or name == "addi") else self.cycle["jmp"] % self.station_num["jmp"] if (name == "jmp" or name == "jalr" or name == "ret") else self.cycle[name] % self.station_num[name]
-        self.station[self.index[name] + index]["busy"] = True
-        self.station[self.index[name] + index]["op"] = name
-        self.station[self.index[name] + index]["Vj"] = Vj if (Qj == -1 or Qj== "init") else 0
-        self.station[self.index[name] + index]["Vk"] = Vk if (Qk == -1 or Qk== "init") else 0
-        self.station[self.index[name] + index]["Qj"] = -1 if (Qj == None ) else Qj
-        self.station[self.index[name] + index]["Qk"] = -1 if (Qk == None ) else Qk
-        self.station[self.index[name] + index]["dest"] = dest
-        self.station[self.index[name] + index]["A"] = A
-        self.station[self.index[name] + index]["status"] = "issued"
+        if (name == "add" or name == "sub" or name == "addi"):
+            temp="add"
+        elif(name == "jmp" or name == "jalr" or name == "ret"):
+            temp="jmp"
+        else: temp=name
+        self.station[self.index[temp] + index]["busy"] = True
+        self.station[self.index[temp] + index]["op"] = name
+        self.station[self.index[temp] + index]["Vj"] = Vj if (Qj == -1 or Qj== "init") else 0
+        self.station[self.index[temp] + index]["Vk"] = Vk if (Qk == -1 or Qk== "init") else 0
+        self.station[self.index[temp] + index]["Qj"] = -1 if (Qj == None ) else Qj
+        self.station[self.index[temp] + index]["Qk"] = -1 if (Qk == None ) else Qk
+        self.station[self.index[temp] + index]["dest"] = dest
+        self.station[self.index[temp] + index]["A"] = A
+        self.station[self.index[temp] + index]["status"] = "issued"
 
         if (name == "add" or name == "sub" or name == "addi"):
             self.used["add"] += 1
@@ -212,11 +218,17 @@ class RS:
             self.station[index]["funct_unit"].Nand(self.station[index]["Vj"], self.station[index]["Vk"])
         elif(op == "beq"):
             self.station[index]["funct_unit"].branch(self.station[index]["Vj"], self.station[index]["Vk"], self.station[index]["A"], pc)
-
+        elif (op=="mult"):
+            self.station[index]["funct_unit"].mul(self.station[index]["Vj"], self.station[index]["Vk"])
         #return self.station[index]["op"], self.station[index]["Qj"], self.station[index]["Qk"], self.station[index]["A"], index
 
     def write(self, index):
-        self.used[self.station[index]["op"]]-=1
+        operation=self.station[index]["op"]
+        if(operation=="addi" or operation=="sub"):
+            operation="add"
+        if(operation=="jalr" or operation== "ret"):
+            operation= "jmp"
+        self.used[operation]-=1
         self.station[index]["busy"] = False
         self.station[index]["op"] = "init"
         self.station[index]["Vj"] = 0

@@ -13,9 +13,9 @@ from NAND import NAND
 #from SW import *
 
 #assmFilePath = input("Please enter assembly file path:")
-#dataMemInitFilePath = input("Please input data memorey init file path:")
+dataMemInitFilePath = input("Please input data memorey init file path:")
 
-#dataMem0 = dataMem(dataMemInitFilePath)
+dataMem0 = dataMem(dataMemInitFilePath)
 #instQueue0 = insrtuctionUnit(assmFilePath)
 
 instQueue0 = insrtuctionUnit("test.txt")
@@ -46,7 +46,7 @@ clk = 0
 pc = 0
 nextPC = []
 nextPCJ = []
-
+wordAdd = 0
 numberOfIssues = 2
 stationsNumber = RS0.station_num_total()
 
@@ -76,8 +76,14 @@ while (clk<12):
                 pc = nextPCJ[0]
                 nextPCJ = []
                 ROB0.flush()
-            
-    
+            elif robType == "lw": 
+                rd=commit["Dest"]
+                reg[rd].data=commit["Value"]
+                reg[rd].ROBNumber=-1
+                ROB0.remove_entry()
+            elif robType == "sw":    
+                dataMem0.update(wordAdd, commit["Value"])
+
     #simulating execute and writing stage
     for i in range(stationsNumber):
         if(RS0.get_status(i) == "executing"):
@@ -93,6 +99,13 @@ while (clk<12):
                     nextPC.append(result)
                     beqMissPredicted += 1
                     missPredicted = True
+            if instType == "lw":
+                wordAdd = result
+                ROB0.upd_entry(robIndex,dataMem0.getData(wordAdd))
+            if instType == "sw":
+                wordADD = result
+                
+
             ROB0.upd_entry(robIndex,result)
             RS0.updRS(robIndex,result)
             RS0.write(i)

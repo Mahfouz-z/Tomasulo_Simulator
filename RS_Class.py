@@ -100,7 +100,7 @@ class RS:
             station_entry["dest"] = 0
             station_entry["A"] = 0
             station_entry["status"] = "init"
-            station_entry["funct_unit"] = BEQ(1)
+            station_entry["funct_unit"] = BEQ(1) #TODO change the 1 to be variable 
             self.station.append(station_entry)
 
         for i in range(self.station_num["add"]):

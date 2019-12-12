@@ -3,7 +3,6 @@ class Multipliers:
        self.result = 0
        self.operand1 = 0 
        self.operand2= 0
-       self.state = True
        self.counter = counter
        self.maxCounter = counter
        self.index = 0  

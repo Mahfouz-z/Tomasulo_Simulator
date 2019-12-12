@@ -1,8 +1,7 @@
 class SW: 
     def __init__ (self, counter):
-        self.state = True
-        self.counter = counter
-        self.maxCounter = counter
+        self.counter = counter+1
+        self.maxCounter = counter+1
         self.operand1 = 0
         self.offset = 0
         self.address = 0

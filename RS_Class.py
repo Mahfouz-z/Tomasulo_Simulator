@@ -12,16 +12,16 @@ class RS:
         self.station_num = station_num
         self.index = {}
         self.index["lw"] = 0
-        self.index["sw"] = self.index["lw"] + self.station_num["lw"]
-        self.index["jmp"] = self.index["sw"] + self.station_num["sw"]
+        self.index["sw"] = self.index["lw"] + self.station_num["lw"][0]
+        self.index["jmp"] = self.index["sw"] + self.station_num["sw"][0]
         #self.index["jalr"] = self.index["sw"] + self.station_num["sw"]
         #self.index["ret"] = self.index["sw"] + self.station_num["sw"]
-        self.index["beq"] = self.index["jmp"] + self.station_num["jmp"]
-        self.index["add"] = self.index["beq"] + self.station_num["beq"]
+        self.index["beq"] = self.index["jmp"] + self.station_num["jmp"][0]
+        self.index["add"] = self.index["beq"] + self.station_num["beq"][0]
         #self.index["sub"] = self.index["beq"] + self.station_num["beq"]
         #self.index["addi"] = self.index["beq"] + self.station_num["beq"]
-        self.index["nand"] = self.index["add"] + self.station_num["add"]
-        self.index["mult"] = self.index["nand"] + self.station_num["nand"]
+        self.index["nand"] = self.index["add"] + self.station_num["add"][0]
+        self.index["mult"] = self.index["nand"] + self.station_num["nand"][0]
 
         self.used = {}
         self.used["lw"] = 0
@@ -55,7 +55,7 @@ class RS:
             station_entry["dest"] = 0
             station_entry["A"] = 0
             station_entry["status"] = "init"
-            station_entry["funct_unit"] = LW(2)
+            station_entry["funct_unit"] = LW(station_num["lw"][1])
             self.station.append(station_entry)
 
         for i in range(self.station_num["sw"]):
@@ -70,7 +70,7 @@ class RS:
             station_entry["dest"] = 0
             station_entry["A"] = 0
             station_entry["status"] = "init"
-            station_entry["funct_unit"] = SW(2)
+            station_entry["funct_unit"] = SW(station_num["sw"][1])
             self.station.append(station_entry)
 
         for i in range(self.station_num["jmp"]):
@@ -85,7 +85,7 @@ class RS:
             station_entry["dest"] = 0
             station_entry["A"] = 0
             station_entry["status"] = "init"
-            station_entry["funct_unit"] = JMP(1)
+            station_entry["funct_unit"] = JMP(station_num["jmp"][1])
             self.station.append(station_entry)
 
         for i in range(self.station_num["beq"]):
@@ -100,7 +100,7 @@ class RS:
             station_entry["dest"] = 0
             station_entry["A"] = 0
             station_entry["status"] = "init"
-            station_entry["funct_unit"] = BEQ(1) #TODO change the 1 to be variable 
+            station_entry["funct_unit"] = BEQ(station_num["beq"][1]) #TODO change the 1 to be variable 
             self.station.append(station_entry)
 
         for i in range(self.station_num["add"]):
@@ -115,7 +115,7 @@ class RS:
             station_entry["dest"] = 0
             station_entry["A"] = 0
             station_entry["status"] = "init"
-            station_entry["funct_unit"] = Adders(2)
+            station_entry["funct_unit"] = Adders(station_num["add"][1])
             self.station.append(station_entry)
 
         for i in range(self.station_num["nand"]):
@@ -130,7 +130,7 @@ class RS:
             station_entry["dest"] = 0
             station_entry["A"] = 0
             station_entry["status"] = "init"
-            station_entry["funct_unit"] = NAND(1)
+            station_entry["funct_unit"] = NAND(station_num["nand"][1])
             self.station.append(station_entry)
 
         for i in range(self.station_num["mult"]):
@@ -145,7 +145,7 @@ class RS:
             station_entry["dest"] = 0
             station_entry["A"] = 0
             station_entry["status"] = "init"
-            station_entry["funct_unit"] = Multipliers(10)
+            station_entry["funct_unit"] = Multipliers(station_num["mult"][1])
             self.station.append(station_entry)
 
     def update_station(self, name, index, busy, op, Vj, Vk, Qj, Qk, dest, A, status):

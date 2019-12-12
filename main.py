@@ -18,16 +18,24 @@ dataMemInitFilePath = input("Please input data memorey init file path:")
 dataMem0 = dataMem(dataMemInitFilePath)
 #instQueue0 = insrtuctionUnit(assmFilePath)
 
+############# Read the Configration file ############
+f = open ("fu.txt", 'r')
+fuInfo = f.read()
+f.close()
+fuInfo = fuInfo.split("\n")
+c=0
+for line in fuInfo:
+    fuInfo[c]=line.split(" ")
+    c+=1
+di={}
+for i in fuInfo:
+    di[i[0]]= i[1],i[2]
+####################################################
+
 instQueue0 = insrtuctionUnit("test.txt")
 lastPC=instQueue0.lastPC()
 config={} #TODO take it from a file
-config["lw"]=2
-config["sw"]=2
-config["jmp"]=2
-config["beq"]=2
-config["add"]=3
-config["nand"]=2
-config["mult"]=2
+config = di 
 
 
 ROB0 = ROB()

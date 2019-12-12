@@ -13,9 +13,9 @@ from NAND import NAND
 #from SW import *
 
 #assmFilePath = input("Please enter assembly file path:")
-dataMemInitFilePath = input("Please input data memorey init file path:")
+#dataMemInitFilePath = input("Please input data memorey init file path:")
 
-dataMem0 = dataMem(dataMemInitFilePath)
+#dataMem0 = dataMem("")#dataMemInitFilePath)
 #instQueue0 = insrtuctionUnit(assmFilePath)
 
 ############# Read the Configration file ############
@@ -49,7 +49,6 @@ reg={}
 for i in range(8):
     reg["x"+ str(i)]=RegFile(None, i)
 
-vj =0
 clk = 0
 pc = 0
 nextPC = []
@@ -62,7 +61,6 @@ stationsNumber = RS0.station_num_total()
 #### We better add the immediate calculation of the load and store to the reservation station class and make it part of the RS to be ready 
 
 while (clk<50):
-
     #simulation commit stage
     for i in range (numberOfIssues):
         commit=ROB0.checkHead()
@@ -71,7 +69,10 @@ while (clk<50):
             if(robType=="add" or robType=="addi" or robType== "sub" or robType=="nand" or robType=="mult"):
                 rd=commit["Dest"]
                 reg[rd].data=commit["Value"]
-                reg[rd].ROBNumber=-1
+                if(robType=="add" or robType=="addi" or robType== "sub"):
+                    if(reg[rd].ROBNumber==ROB0.head):
+                        reg[rd].ROBNumber= -1
+                else: reg[rd].ROBNumber= -1
                 ROB0.remove_entry()
             elif(robType=="beq"):
                 if missPredicted:
@@ -90,7 +91,7 @@ while (clk<50):
                 reg[rd].ROBNumber=-1
                 ROB0.remove_entry()
             elif robType == "sw":    
-                dataMem0.update(wordAdd, vj)
+                dataMem0.update(wordAdd, commit["Value"])
                 ROB0.remove_entry()
 
     #simulating execute and writing stage
@@ -100,7 +101,7 @@ while (clk<50):
         if(RS0.get_status(i) == "done"):
             robIndex = RS0.getTargetRob(i)
             instType = RS0.get_type(i)
-            if (instType == "jmp" or instType == "jalr" or instType == "ret"):
+            if (instType == "jmp" or instType == "jalr" or instType == "ret"): #TODO jalr doesn't write to a register
                 nextPCJ.append(result)
             if instType == "beq":
                 beqNum += 1
@@ -113,11 +114,11 @@ while (clk<50):
                 ROB0.upd_entry(robIndex,dataMem0.getData(wordAdd))
             if instType == "sw":
                 wordADD = result
-                vj = RS0.get_Vj(i)
+                ROB0.upd_entry(robIndex,RS0.get_Vj(i))
+            else:
+                ROB0.upd_entry(robIndex,result)
 
-            ROB0.upd_entry(robIndex,result)
             RS0.updRS(robIndex,result)
-            ROB0.upd_entry(robIndex,result)
             RS0.write(i)
         if(RS0.ready(i)):
             RS0.execute(i, pc)
@@ -144,6 +145,5 @@ while (clk<50):
                     break     
             else:
                 break
-    
     
     clk+=1         

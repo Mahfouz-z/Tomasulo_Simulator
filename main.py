@@ -33,7 +33,7 @@ for i in fuInfo:
     di[i[0]]= int(i[1]),int(i[2])
 ####################################################
 
-instQueue0 = insrtuctionUnit("test.txt")
+instQueue0 = insrtuctionUnit("test2.txt")
 lastPC=instQueue0.lastPC()
 config={} #TODO take it from a file
 config = di 
@@ -179,4 +179,5 @@ while (clk<100):
 
 print("The time of excution is:" + str(clk) + "cycles")
 print("The IPC is:" + str(com / clk))
-print ("the ratio of branch mispredictions is:" + str(beqMissPredicted/beqNum))
+if(beqNum!=0):
+    print ("the ratio of branch mispredictions is:" + str(beqMissPredicted/beqNum))

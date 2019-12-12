@@ -53,7 +53,7 @@ stationsNumber = RS0.station_num_total()
 
 #### We better add the immediate calculation of the load and store to the reservation station class and make it part of the RS to be ready 
 
-while (clk<12):
+while (clk<50):
 
     #simulation commit stage
     for i in range (numberOfIssues):
@@ -93,8 +93,8 @@ while (clk<12):
                     nextPC.append(result)
                     beqMissPredicted += 1
                     missPredicted = True
-            ROB0.upd_entry(robIndex,result)
             RS0.updRS(robIndex,result)
+            ROB0.upd_entry(robIndex,result)
             RS0.write(i)
         if(RS0.ready(i)):
             RS0.execute(i, pc)

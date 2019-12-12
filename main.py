@@ -41,6 +41,7 @@ reg={}
 for i in range(8):
     reg["x"+ str(i)]=RegFile(None, i)
 
+ebreak = False
 clk = 0
 pc = 0
 nextPC = []
@@ -83,9 +84,14 @@ while (clk<50):
                 reg[rd].data=commit["Value"]
                 reg[rd].ROBNumber=-1
                 ROB0.remove_entry()
-            elif robType == "sw":    
+            elif robType == "sw":
                 dataMem0.update(wordAdd, commit["Value"])
                 ROB0.remove_entry()
+            elif robType == "ebreak":
+                ebreak = True
+    
+    if ebreak:
+        break
 
     #simulating execute and writing stage
     for i in range(stationsNumber):
@@ -116,6 +122,12 @@ while (clk<50):
         if(RS0.ready(i)):
             RS0.execute(i, pc)
 
+    result = RS0.decFuncUnitCount(RS0.station_num_total())
+    if(result == "ebreak"):
+        robIndex = RS0.getTargetRob(RS0.station_num_total())
+        instType = RS0.get_type(RS0.station_num_total())
+        ROB0.upd_entry(robIndex,result)
+    RS0.execute(RS0.station_num_total(), pc)
     
     #simulating issue stage
     for i in range(numberOfIssues):
@@ -139,4 +151,4 @@ while (clk<50):
             else:
                 break
     
-    clk+=1         
+    clk+=1

@@ -9,7 +9,9 @@ from SW import *
 
 class RS:
     def __init__(self, station_num):
+        self.ebreak = False
         self.station_num = station_num
+        self.station_num["ebreak"][0] = 1
         self.index = {}
         self.index["lw"] = 0
         self.index["sw"] = self.index["lw"] + self.station_num["lw"]
@@ -22,6 +24,7 @@ class RS:
         #self.index["addi"] = self.index["beq"] + self.station_num["beq"]
         self.index["nand"] = self.index["add"] + self.station_num["add"]
         self.index["mult"] = self.index["nand"] + self.station_num["nand"]
+        self.index["ebreak"] = self.index["mult"] + self.station_num["mult"]
 
         self.used = {}
         self.used["lw"] = 0
@@ -31,6 +34,7 @@ class RS:
         self.used["add"] = 0
         self.used["nand"] = 0
         self.used["mult"] = 0
+        self.used["ebreak"] = 0
         
         self.cycle = {}
         self.cycle["lw"] = 0
@@ -40,6 +44,7 @@ class RS:
         self.cycle["add"] = 0
         self.cycle["nand"] = 0
         self.cycle["mult"] = 0
+        self.cycle["ebreak"] = 0
 
         self.station = []
 
@@ -148,6 +153,20 @@ class RS:
             station_entry["funct_unit"] = Multipliers(10)
             self.station.append(station_entry)
 
+        station_entry = {}
+        station_entry["name"] = "ebreak"
+        station_entry["busy"] = False
+        station_entry["op"] = "init"
+        station_entry["Vj"] = 0
+        station_entry["Vk"] = 0
+        station_entry["Qj"] = -1
+        station_entry["Qk"] = -1
+        station_entry["dest"] = 0
+        station_entry["A"] = 0
+        station_entry["status"] = "init"
+        station_entry["funct_unit"] = None
+        self.station.append(station_entry)
+
     def update_station(self, name, index, busy, op, Vj, Vk, Qj, Qk, dest, A, status):
         self.station[self.index[name] + index]["busy"] = busy
         self.station[self.index[name] + index]["op"] = op
@@ -162,10 +181,14 @@ class RS:
     def issue(self, name, Vj, Vk, Qj, Qk, dest, A):
         temp=str()
         index = self.cycle["add"] % self.station_num["add"] if (name == "add" or name == "sub" or name == "addi") else self.cycle["jmp"] % self.station_num["jmp"] if (name == "jmp" or name == "jalr" or name == "ret") else self.cycle[name] % self.station_num[name]
+        if (name == "ebreak"):
+            index = 0
         if (name == "add" or name == "sub" or name == "addi"):
             temp="add"
         elif(name == "jmp" or name == "jalr" or name == "ret"):
             temp="jmp"
+        elif(name == "ebreak"):
+            temp = "ebreak"
         else: temp=name
         self.station[self.index[temp] + index]["busy"] = True
         self.station[self.index[temp] + index]["op"] = name
@@ -224,6 +247,8 @@ class RS:
             self.station[index]["funct_unit"].getAddress(self.station[index]["Vj"], self.station[index]["A"])
         elif(op == "sw"):
             self.station[index]["funct_unit"].getAddress(self.station[index]["Vj"], self.station[index]["A"])
+        else:
+            self.ebreak = True
         #return self.station[index]["op"], self.station[index]["Qj"], self.station[index]["Qk"], self.station[index]["A"], index
 
     def write(self, index):
@@ -256,7 +281,12 @@ class RS:
     def get_missPridected(self):
         return self.missPridected
 
+    def get_ebreak(self):
+        return self.ebreak
+
     def decFuncUnitCount(self, index):
+        if(index == self.index["ebreak"] and self.ebreak):
+            return "ebreak"
         self.station[index]["funct_unit"].count()
         result = self.station[index]["funct_unit"].ready()
         if self.station[index]["op"] == "beq":

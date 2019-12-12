@@ -12,22 +12,31 @@ from NAND import NAND
 #from LW import *
 #from SW import *
 
+
 #assmFilePath = input("Please enter assembly file path:")
 #dataMemInitFilePath = input("Please input data memorey init file path:")
 
-dataMem0 = dataMem("")#dataMemInitFilePath)
+dataMem0 = dataMem("dataMem.txt")#dataMemInitFilePath)
 #instQueue0 = insrtuctionUnit(assmFilePath)
 
-instQueue0 = insrtuctionUnit("test.txt")
+############# Read the Configration file ############
+f = open ("fu.txt", 'r')
+fuInfo = f.read()
+f.close()
+fuInfo = fuInfo.split("\n")
+c=0
+for line in fuInfo:
+    fuInfo[c]=line.split(" ")
+    c+=1
+di={}
+for i in fuInfo:
+    di[i[0]]= int(i[1]),int(i[2])
+####################################################
+
+instQueue0 = insrtuctionUnit("inst.txt")
 lastPC=instQueue0.lastPC()
 config={} #TODO take it from a file
-config["lw"]=2
-config["sw"]=2
-config["jmp"]=2
-config["beq"]=2
-config["add"]=3
-config["nand"]=2
-config["mult"]=2
+config = di 
 
 
 ROB0 = ROB()
@@ -54,7 +63,6 @@ stationsNumber = RS0.station_num_total()
 #### We better add the immediate calculation of the load and store to the reservation station class and make it part of the RS to be ready 
 
 while (clk<50):
-    print(reg['x3'].data)
     #simulation commit stage
     for i in range (numberOfIssues):
         commit=ROB0.checkHead()

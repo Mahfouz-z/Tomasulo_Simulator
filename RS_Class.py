@@ -14,17 +14,17 @@ class RS:
         self.station_num["ebreak"][0] = 1
         self.index = {}
         self.index["lw"] = 0
-        self.index["sw"] = self.index["lw"] + self.station_num["lw"]
-        self.index["jmp"] = self.index["sw"] + self.station_num["sw"]
+        self.index["sw"] = self.index["lw"] + self.station_num["lw"][0]
+        self.index["jmp"] = self.index["sw"] + self.station_num["sw"][0]
         #self.index["jalr"] = self.index["sw"] + self.station_num["sw"]
         #self.index["ret"] = self.index["sw"] + self.station_num["sw"]
-        self.index["beq"] = self.index["jmp"] + self.station_num["jmp"]
-        self.index["add"] = self.index["beq"] + self.station_num["beq"]
+        self.index["beq"] = self.index["jmp"] + self.station_num["jmp"][0]
+        self.index["add"] = self.index["beq"] + self.station_num["beq"][0]
         #self.index["sub"] = self.index["beq"] + self.station_num["beq"]
         #self.index["addi"] = self.index["beq"] + self.station_num["beq"]
-        self.index["nand"] = self.index["add"] + self.station_num["add"]
-        self.index["mult"] = self.index["nand"] + self.station_num["nand"]
-        self.index["ebreak"] = self.index["mult"] + self.station_num["mult"]
+        self.index["nand"] = self.index["add"] + self.station_num["add"][0]
+        self.index["mult"] = self.index["nand"] + self.station_num["nand"][0]
+        self.index["ebreak"] = self.index["mult"] + self.station_num["mult"][0]
 
         self.used = {}
         self.used["lw"] = 0
@@ -48,7 +48,7 @@ class RS:
 
         self.station = []
 
-        for i in range(self.station_num["lw"]):
+        for i in range(self.station_num["lw"][0]):
             station_entry = {}
             station_entry["name"] = "lw" + str(i)
             station_entry["busy"] = False
@@ -60,10 +60,10 @@ class RS:
             station_entry["dest"] = 0
             station_entry["A"] = 0
             station_entry["status"] = "init"
-            station_entry["funct_unit"] = LW(2)
+            station_entry["funct_unit"] = LW(station_num["lw"][1])
             self.station.append(station_entry)
 
-        for i in range(self.station_num["sw"]):
+        for i in range(self.station_num["sw"][0]):
             station_entry = {}
             station_entry["name"] = "sw" + str(i)
             station_entry["busy"] = False
@@ -75,10 +75,10 @@ class RS:
             station_entry["dest"] = 0
             station_entry["A"] = 0
             station_entry["status"] = "init"
-            station_entry["funct_unit"] = SW(2)
+            station_entry["funct_unit"] = SW(station_num["sw"][1])
             self.station.append(station_entry)
 
-        for i in range(self.station_num["jmp"]):
+        for i in range(self.station_num["jmp"][0]):
             station_entry = {}
             station_entry["name"] = "jmp" + str(i)
             station_entry["busy"] = False
@@ -90,10 +90,10 @@ class RS:
             station_entry["dest"] = 0
             station_entry["A"] = 0
             station_entry["status"] = "init"
-            station_entry["funct_unit"] = JMP(1)
+            station_entry["funct_unit"] = JMP(station_num["jmp"][1])
             self.station.append(station_entry)
 
-        for i in range(self.station_num["beq"]):
+        for i in range(self.station_num["beq"][0]):
             station_entry = {}
             station_entry["name"] = "beq" + str(i)
             station_entry["busy"] = False
@@ -105,10 +105,10 @@ class RS:
             station_entry["dest"] = 0
             station_entry["A"] = 0
             station_entry["status"] = "init"
-            station_entry["funct_unit"] = BEQ(1) #TODO change the 1 to be variable 
+            station_entry["funct_unit"] = BEQ(station_num["beq"][1]) #TODO change the 1 to be variable 
             self.station.append(station_entry)
 
-        for i in range(self.station_num["add"]):
+        for i in range(self.station_num["add"][0]):
             station_entry = {}
             station_entry["name"] = "add" + str(i)
             station_entry["busy"] = False
@@ -120,10 +120,10 @@ class RS:
             station_entry["dest"] = 0
             station_entry["A"] = 0
             station_entry["status"] = "init"
-            station_entry["funct_unit"] = Adders(2)
+            station_entry["funct_unit"] = Adders(station_num["add"][1])
             self.station.append(station_entry)
 
-        for i in range(self.station_num["nand"]):
+        for i in range(self.station_num["nand"][0]):
             station_entry = {}
             station_entry["name"] = "nand" + str(i)
             station_entry["busy"] = False
@@ -135,10 +135,10 @@ class RS:
             station_entry["dest"] = 0
             station_entry["A"] = 0
             station_entry["status"] = "init"
-            station_entry["funct_unit"] = NAND(1)
+            station_entry["funct_unit"] = NAND(station_num["nand"][1])
             self.station.append(station_entry)
 
-        for i in range(self.station_num["mult"]):
+        for i in range(self.station_num["mult"][0]):
             station_entry = {}
             station_entry["name"] = "mult" + str(i)
             station_entry["busy"] = False
@@ -150,7 +150,7 @@ class RS:
             station_entry["dest"] = 0
             station_entry["A"] = 0
             station_entry["status"] = "init"
-            station_entry["funct_unit"] = Multipliers(10)
+            station_entry["funct_unit"] = Multipliers(station_num["mult"][1])
             self.station.append(station_entry)
 
         station_entry = {}
@@ -180,7 +180,7 @@ class RS:
 
     def issue(self, name, Vj, Vk, Qj, Qk, dest, A):
         temp=str()
-        index = self.cycle["add"] % self.station_num["add"] if (name == "add" or name == "sub" or name == "addi") else self.cycle["jmp"] % self.station_num["jmp"] if (name == "jmp" or name == "jalr" or name == "ret") else self.cycle[name] % self.station_num[name]
+        index = self.cycle["add"] % self.station_num["add"][0] if (name == "add" or name == "sub" or name == "addi") else self.cycle["jmp"] % self.station_num["jmp"][0] if (name == "jmp" or name == "jalr" or name == "ret") else self.cycle[name] % self.station_num[name][0]
         if (name == "ebreak"):
             index = 0
         if (name == "add" or name == "sub" or name == "addi"):
@@ -212,17 +212,17 @@ class RS:
 
     def available(self, name):
         if (name == "add" or name == "sub" or name == "addi"):
-            return self.used["add"] < self.station_num["add"]
+            return self.used["add"] < self.station_num["add"][0]
         elif (name == "jmp" or name == "jalr" or name == "ret"):
-            return self.used["jmp"] < self.station_num["jmp"]
+            return self.used["jmp"] < self.station_num["jmp"][0]
         else:
-            return self.used[name] < self.station_num[name]
+            return self.used[name] < self.station_num[name][0]
 
     def ready(self, index):
         return ((self.station[index]["Qj"] == -1) and (self.station[index]["Qk"] == -1) and (self.station[index]["status"] == "issued"))
 
     def station_num_total(self):
-        return self.index["mult"] + self.station_num["mult"]
+        return self.index["mult"] + self.station_num["mult"][0]
 
     def execute(self, index, pc):
         self.station[index]["status"] = "executing"

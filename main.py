@@ -53,8 +53,8 @@ stationsNumber = RS0.station_num_total()
 
 #### We better add the immediate calculation of the load and store to the reservation station class and make it part of the RS to be ready 
 
-while (clk<50):
-
+while (clk<40):
+  
     #simulation commit stage
     for i in range (numberOfIssues):
         commit=ROB0.checkHead()
@@ -63,7 +63,10 @@ while (clk<50):
             if(robType=="add" or robType=="addi" or robType== "sub" or robType=="nand" or robType=="mult"):
                 rd=commit["Dest"]
                 reg[rd].data=commit["Value"]
-                reg[rd].ROBNumber=-1
+                if(robType=="add" or robType=="addi" or robType== "sub"):
+                    if(reg[rd].ROBNumber==ROB0.head):
+                        reg[rd].ROBNumber= -1
+                   # else: reg[rd].ROBNumber= -1
                 ROB0.remove_entry()
             elif(robType=="beq"):
                 if missPredicted:

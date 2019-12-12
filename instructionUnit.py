@@ -45,7 +45,7 @@ class instruction:
         self.temp= self.temp.replace(')', '')
         self.temp= self.temp.split(" ")
         self.instType=self.temp[0]
-        if(self.instType!= "jmp" and self.instType!= "addi" and self.instType!= "beq" and self.instType!= "ret" and self.instType!= "jalr" ):
+        if(self.instType!= "jmp" and self.instType!= "lw" and self.instType!= "sw" and self.instType!= "ebreak" and self.instType!= "addi" and self.instType!= "beq" and self.instType!= "ret" and self.instType!= "jalr" ):
             self.r1=self.temp[1]
             if(self.temp[2][0]=='x'):
                 self.r2=self.temp[2]

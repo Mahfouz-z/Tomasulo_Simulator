@@ -81,7 +81,17 @@ class instruction:
             self.r2=self.temp[2]
             self.r3='x0'
             self.imm=self.temp[3]
-        
+        elif(self.instType== "lw"):
+            self.r2=self.temp[3]
+            self.r3= 'x0'
+            self.imm= self.temp[2]
+            self.r1=self.temp[1]
+        elif(self.instType== "sw"):
+            self.r2=self.temp[3]
+            self.r3= self.temp[1]
+            self.imm= self.temp[2]
+            self.r1='x0'
+            
  
     
             

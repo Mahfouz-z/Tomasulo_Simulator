@@ -20,7 +20,7 @@ dataMem0 = dataMem(dataMemInitFilePath)
 
 instQueue0 = insrtuctionUnit("test.txt")
 lastPC=instQueue0.lastPC()
-config={}
+config={} #TODO take it from a file
 config["lw"]=2
 config["sw"]=2
 config["jmp"]=2
@@ -41,7 +41,7 @@ reg={}
 for i in range(8):
     reg["x"+ str(i)]=RegFile(None, i)
 
-
+vj =0
 clk = 0
 pc = 0
 nextPC = []
@@ -53,7 +53,7 @@ stationsNumber = RS0.station_num_total()
 
 #### We better add the immediate calculation of the load and store to the reservation station class and make it part of the RS to be ready 
 
-while (clk<12):
+while (clk<50):
 
     #simulation commit stage
     for i in range (numberOfIssues):
@@ -82,7 +82,8 @@ while (clk<12):
                 reg[rd].ROBNumber=-1
                 ROB0.remove_entry()
             elif robType == "sw":    
-                dataMem0.update(wordAdd, commit["Value"])
+                dataMem0.update(wordAdd, vj)
+                ROB0.remove_entry()
 
     #simulating execute and writing stage
     for i in range(stationsNumber):
@@ -104,10 +105,11 @@ while (clk<12):
                 ROB0.upd_entry(robIndex,dataMem0.getData(wordAdd))
             if instType == "sw":
                 wordADD = result
-                
+                vj = RS0.get_Vj(i)
 
             ROB0.upd_entry(robIndex,result)
             RS0.updRS(robIndex,result)
+            ROB0.upd_entry(robIndex,result)
             RS0.write(i)
         if(RS0.ready(i)):
             RS0.execute(i, pc)

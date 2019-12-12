@@ -1,4 +1,4 @@
 label:
-mult x2, x2, x2
+add x2, x2, x2
 beq x5, x5, label
 add x2, x2, x2

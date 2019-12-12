@@ -91,6 +91,11 @@ class instruction:
             self.r3= self.temp[1]
             self.imm= self.temp[2]
             self.r1='x0'
+        elif(self.instType== "ebreak"):
+            self.r2='x0'
+            self.r3='x0'
+            self.imm='0'
+            self.r1='x0'
             
  
     

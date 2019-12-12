@@ -15,10 +15,10 @@ from NAND import NAND
 #assmFilePath = input("Please enter assembly file path:")
 #dataMemInitFilePath = input("Please input data memorey init file path:")
 
-dataMem0 = dataMem("")#dataMemInitFilePath)
+#dataMem0 = dataMem("")#dataMemInitFilePath)
 #instQueue0 = insrtuctionUnit(assmFilePath)
 
-instQueue0 = insrtuctionUnit("test.txt")
+instQueue0 = insrtuctionUnit("inst.txt")
 lastPC=instQueue0.lastPC()
 config={} #TODO take it from a file
 config["lw"]=2
@@ -53,7 +53,6 @@ stationsNumber = RS0.station_num_total()
 #### We better add the immediate calculation of the load and store to the reservation station class and make it part of the RS to be ready 
 
 while (clk<50):
-    print(reg['x3'].data)
     #simulation commit stage
     for i in range (numberOfIssues):
         commit=ROB0.checkHead()

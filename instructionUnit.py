@@ -14,7 +14,7 @@ class insrtuctionUnit:
         for q in self.instructions:
             if(q[len(q)-1]!=':'):
                 q=instruction(q)
-                if(q.imm.isdigit()!=1):
+                if(q.imm.isdigit()!=1 and q.imm[0]!='-'):
                     q.imm=self.labeldict[q.imm]
                 else: q.imm=int(q.imm)
                 self.instructionList.append(q)

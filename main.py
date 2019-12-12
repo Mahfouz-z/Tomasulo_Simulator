@@ -37,9 +37,9 @@ RS0 = RS(config)
 # reg_file
 reg={}
 for i in range(8):
-    reg["x"+ str(i)]=RegFile(None, 0)
+    reg["x"+ str(i)]=RegFile(None, i)
 
-reg['x2'].data=7
+
 clk = 0
 pc = 0
 
@@ -49,7 +49,7 @@ stationsNumber = RS0.station_num_total()
 
 #### We better add the immediate calculation of the load and store to the reservation station class and make it part of the RS to be ready 
 
-while (clk<9):
+while (clk<12):
 
     #simulation commit stage
     for i in range (numberOfIssues):
@@ -86,8 +86,8 @@ while (clk<9):
             if(RS0.available(instType)):
                 if(ROB0.check_available() >= 1):
                     dest=ROB0.initiate_entry(issue[0])
-                    reg[issue[0].r1].ROBNumber=dest
                     RS0.issue(instType, reg[issue[0].r2].data, reg[issue[0].r3].data, reg[issue[0].r2].ROBNumber, reg[issue[0].r3].ROBNumber, dest, int(issue[0].imm))
+                    reg[issue[0].r1].ROBNumber=dest
                     if(instType == 'beq'):
                         if(int(issue[0].imm)<=pc):
                             pc=int(issue[0].imm)
